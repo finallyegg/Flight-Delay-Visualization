@@ -32,8 +32,17 @@ First you need to import airline performance data.
 ```{r}
 library(readr)
 May17flight <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/May17flight.csv")
+library(readr)
+L_AIRPORT <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/L_AIRPORT.csv")
+View(L_AIRPORT)
+
 ```
 
+You can view the airport list by use "unique"
+```{r}
+unique(May17flight$ORIGIN)
+length(unique(May17flight$ORIGIN))
+```
 Load any required packages in a code chunk (you may need to install some packages):
 
 ```{r, message=F, warning=F}
