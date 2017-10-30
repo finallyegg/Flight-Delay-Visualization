@@ -28,9 +28,10 @@ You can do numbers like this:
 See [http://rmarkdown.rstudio.com/](http://rmarkdown.rstudio.com/) for all the amazing things you can do.
 
 
-Here's my first code chunk.
+First you need to import airline performance data.
 ```{r}
-2+2
+library(readr)
+May17flight <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/May17flight.csv")
 ```
 
 Load any required packages in a code chunk (you may need to install some packages):
@@ -42,6 +43,7 @@ library(maps)
 library(spocc)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 ```
+
 
 
 We are going to use the `occ()` function to download _occurrence_ records for the American robin (_Turdus migratorius_) from the [Global Biodiversity Information Facility](gbif.org).
