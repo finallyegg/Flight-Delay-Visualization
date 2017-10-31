@@ -27,6 +27,16 @@ You can do numbers like this:
 
 See [http://rmarkdown.rstudio.com/](http://rmarkdown.rstudio.com/) for all the amazing things you can do.
 
+Load any required packages in a code chunk (you may need to install some packages):
+
+```{r, message=F, warning=F}
+library(dplyr)
+library(ggplot2)
+library(maps)
+library(spocc)
+library(leaflet)
+knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
+```
 
 First you need to import airline performance data.
 ```{r}
@@ -53,17 +63,9 @@ airport_joined=left_join(codeunique, AirportData, by = c("Code" = "AIRPORT"))
 
 View the Location Map Use "Leaflet"
 ```{r}
-leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>% addMarkers(airport_joined$LONGITUDE,airport_joined$LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME)
+leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>% addMarkers(airport_joined$LONGITUDE,airport_joined$LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
 ```
-Load any required packages in a code chunk (you may need to install some packages):
 
-```{r, message=F, warning=F}
-library(dplyr)
-library(ggplot2)
-library(maps)
-library(spocc)
-knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
-```
 
 
 
