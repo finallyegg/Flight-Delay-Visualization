@@ -48,7 +48,12 @@ View(AirportData)
 
 ```
 
-You can view the airport list by use "unique"
+We can find some duplicated Data, Remove them
+```{r}
+AirportData_nd=AirportData[!duplicated(AirportData$Code),]
+```
+
+You can view the domestic airport list by use "unique"
 ```{r}
 codeunique=data.frame(unique(May17flight$ORIGIN))
 colnames(codeunique)="Code"
@@ -57,7 +62,7 @@ length(unique(May17flight$ORIGIN))
 
 Obtain Airdata coordinate by "left-join"
 ```{r}
-airport_joined=left_join(codeunique, AirportData, by = c("Code" = "AIRPORT"))
+airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 
 ```
 
