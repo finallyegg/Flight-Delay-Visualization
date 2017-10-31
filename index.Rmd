@@ -75,6 +75,7 @@ ggplot
 ```{r}
 p=ggplot(subset(May17flight,!is.na(DEP_DELAY_NEW)),aes(x=DISTANCE,y=DEP_DELAY_NEW))
 p+geom_point(alpha=0.1)
+p=ggplot(May17flight, aes(x = DISTANCE, y = DEP_DELAY_NEW, color = factor(CARRIER)))
 ```
 
 
