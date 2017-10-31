@@ -71,6 +71,11 @@ View the Location Map Use "Leaflet"
 leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>% addMarkers(airport_joined$LONGITUDE,airport_joined$LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
 ```
 
+ggplot
+```{r}
+p=ggplot(subset(May17flight,!is.na(DEP_DELAY_NEW)),aes(x=DISTANCE,y=DEP_DELAY_NEW))
+p+geom_point(alpha=0.1)
+```
 
 
 
