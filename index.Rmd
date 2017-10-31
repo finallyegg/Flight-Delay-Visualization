@@ -32,16 +32,28 @@ First you need to import airline performance data.
 ```{r}
 library(readr)
 May17flight <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/May17flight.csv")
-library(readr)
-L_AIRPORT <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/L_AIRPORT.csv")
-View(L_AIRPORT)
+
+AirportData <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/AirportData.csv")
+View(AirportData)
 
 ```
 
 You can view the airport list by use "unique"
 ```{r}
-unique(May17flight$ORIGIN)
+codeunique=data.frame(unique(May17flight$ORIGIN))
+colnames(codeunique)="Code"
 length(unique(May17flight$ORIGIN))
+```
+
+Obtain Airdata coordinate by "left-join"
+```{r}
+airport_joined=left_join(codeunique, AirportData, by = c("Code" = "AIRPORT"))
+
+```
+
+View the Location Map Use "Leaflet"
+```{r}
+leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>% addMarkers(airport_joined$LONGITUDE,airport_joined$LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME)
 ```
 Load any required packages in a code chunk (you may need to install some packages):
 
