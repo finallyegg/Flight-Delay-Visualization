@@ -5,7 +5,8 @@ subtitle: With the relationship of geographic...
 ---
 
 # Introduction
-My really awesome and complete introduction will go here.  
+With more and more people choose plane to travel, the on-time performace becomes important. I will focus on airline on-time data of May 2017. First, I will test the relationship between "Distance" and "Delay time", I might use ggplot to draw 2D plot. Second, I would like use leaflet to create an interative map shows the Geographical distribution of Airport related to Average delay-time. 
+For My hypothsis, I assume distance and delay-time will have a negative relationship. The geographical pattern should be clear to see.
 
 > I know words.  I have the best words.  ~ Donald Trump
 
@@ -28,7 +29,7 @@ You can do numbers like this:
 See [http://rmarkdown.rstudio.com/](http://rmarkdown.rstudio.com/) for all the amazing things you can do.
 
 Load any required packages in a code chunk (you may need to install some packages):
-
+# Data
 ```{r, message=F, warning=F}
 library(dplyr)
 library(ggplot2)
@@ -44,7 +45,6 @@ library(readr)
 May17flight <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/May17flight.csv")
 
 AirportData <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/AirportData.csv")
-View(AirportData)
 
 ```
 
@@ -76,8 +76,13 @@ ggplot
 p=ggplot(subset(May17flight,!is.na(DEP_DELAY_NEW)),aes(x=DISTANCE,y=DEP_DELAY_NEW))
 p+geom_point(alpha=0.1)
 p=ggplot(May17flight, aes(x = DISTANCE, y = DEP_DELAY_NEW, color = factor(CARRIER)))
-```
+p+geom_point(alpha=0.1)
 
+```
+Only View Three Major Airlines
+```{r}
+ggplot(subset(May17flight,CARRIER %in% c("AA","UA","DL")),aes(x = DISTANCE, y = DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)
+```
 
 
 We are going to use the `occ()` function to download _occurrence_ records for the American robin (_Turdus migratorius_) from the [Global Biodiversity Information Facility](gbif.org).
