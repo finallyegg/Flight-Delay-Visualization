@@ -12,19 +12,16 @@ For My hypothsis, I assume distance and delay-time will have a negative relation
 
 # Materials and methods
 
-Narrative and most code will go here.  Describe what you are doing and show how to do it (with code).
+Data Source:
 
-You can do bullets like this:
+* Filght on-time Performance --- from BUREAU OF TRANSPORTATION STATISTICS
+* Airport Location Data --- BUREAU OF TRANSPORTATION STATISTICS
 
-* The first most important thing
-* The second most important thing
-* The third most important thing
+Poposed Mehod:
 
-You can do numbers like this:
-
-1. The first most important thing
-2. The second most important thing
-3. The third most important thing
+1. Data prepartion (Creat another dataframe by Merge two csv file )
+2. General view the airport location distribubtion
+3. Use ggplot to see the relationship between distance 
 
 See [http://rmarkdown.rstudio.com/](http://rmarkdown.rstudio.com/) for all the amazing things you can do.
 
