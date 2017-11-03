@@ -349,7 +349,7 @@ library(leaflet)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling</code></pre>
 <p>First you need to import airline performance data.</p>
 <pre class="r"><code>library(readr)
-May17flight &lt;- read_csv(&quot;data/May17flight.csv&quot;)</code></pre>
+May17flight &lt;- read_csv(&quot;https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/data/May17flight.csv&quot;)</code></pre>
 <pre><code>## Warning: Missing column names filled in: &#39;X25&#39; [25]</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
@@ -368,7 +368,7 @@ May17flight &lt;- read_csv(&quot;data/May17flight.csv&quot;)</code></pre>
 ##   DISTANCE = col_double()
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>AirportData &lt;- read_csv(&quot;data/AirportData.csv&quot;)</code></pre>
+<pre class="r"><code>AirportData &lt;- read_csv(&quot;https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/data/AirportData.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   AIRPORT_ID = col_integer(),
