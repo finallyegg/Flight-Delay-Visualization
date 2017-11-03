@@ -39,9 +39,9 @@ knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 First you need to import airline performance data.
 ```{r}
 library(readr)
-May17flight <- read_csv("data/May17flight.csv")
+May17flight <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/data/May17flight.csv")
 
-AirportData <- read_csv("data/AirportData.csv")
+AirportData <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/data/AirportData.csv")
 
 ```
 
