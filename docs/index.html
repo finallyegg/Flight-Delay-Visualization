@@ -405,7 +405,8 @@ p+geom_point(alpha=0.1)</code></pre>
 <pre class="r"><code>p=ggplot(May17flight, aes(x = DISTANCE, y = DEP_DELAY_NEW, color = factor(CARRIER)))
 p+geom_point(alpha=0.1)</code></pre>
 <pre><code>## Warning: Removed 3866 rows containing missing values (geom_point).</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-7-2.png" width="672" /> Only View Three Major Airlines</p>
+<p><img src="index_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<p>Only View Three Major Airlines</p>
 <pre class="r"><code>ggplot(subset(May17flight,CARRIER %in% c(&quot;AA&quot;,&quot;UA&quot;,&quot;DL&quot;)),aes(x = DISTANCE, y = DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)</code></pre>
 <pre><code>## Warning: Removed 546 rows containing missing values (geom_point).</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
