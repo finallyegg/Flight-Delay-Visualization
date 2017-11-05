@@ -413,8 +413,8 @@ p+geom_point(alpha=0.1)</code></pre>
 <pre class="r"><code>monthlydata=aggregate(May17flight[, 20:21], list(May17flight$ORIGIN), mean,na.rm=T)
 colnames(monthlydata)[colnames(monthlydata)==&quot;Group.1&quot;]=&quot;Code&quot;
 l2=left_join(monthlydata, AirportData_nd, by = &quot;Code&quot;)
-pal &lt;- colorBin(&quot;YlOrRd&quot;, domain = l2$DEP_DELAY_NEW)
-leaflet(l2) %&gt;% addProviderTiles(providers$CartoDB.Positron) %&gt;% addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW))</code></pre>
+pal &lt;- colorBin(&quot;YlOrRd&quot;, domain = l2$DEP_DELAY_NEW)</code></pre>
+<pre class="r"><code>leaflet(l2) %&gt;% addProviderTiles(providers$CartoDB.Positron) %&gt;% addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW))</code></pre>
 <pre><code>## Assuming &#39;LONGITUDE&#39; and &#39;LATITUDE&#39; are longitude and latitude, respectively</code></pre>
 <pre><code>## Warning in RColorBrewer::brewer.pal(max(3, n), palette): n too large, allowed maximum for palette YlOrRd is 9
 ## Returning the palette you asked for with that many colors

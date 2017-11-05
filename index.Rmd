@@ -97,10 +97,14 @@ monthlydata=aggregate(May17flight[, 20:21], list(May17flight$ORIGIN), mean,na.rm
 colnames(monthlydata)[colnames(monthlydata)=="Group.1"]="Code"
 l2=left_join(monthlydata, AirportData_nd, by = "Code")
 pal <- colorBin("YlOrRd", domain = l2$DEP_DELAY_NEW)
-leaflet(l2) %>% addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW))
 
 ```
 
+
+```{r}
+leaflet(l2) %>% addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(
+color=~pal(l2$DEP_DELAY_NEW))
+```
 
 # Results
 
