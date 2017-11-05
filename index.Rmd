@@ -74,7 +74,7 @@ airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 
 View the Location Map Use "Leaflet"
 ```{r}
-leaflet() %>% addProviderTiles(providers$OpenStreetMap) %>% addMarkers(airport_joined$LONGITUDE,airport_joined$LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
+leaflet(airport_joined) %>% addProviderTiles(providers$OpenStreetMap) %>% addMarkers(airport_joined$LONGITUDE,airport_joined$LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
 ```
 
 ggplot
@@ -102,8 +102,7 @@ pal <- colorBin("YlOrRd", domain = l2$DEP_DELAY_NEW)
 
 
 ```{r}
-leaflet(l2) %>% addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(
-color=~pal(l2$DEP_DELAY_NEW))
+leaflet(l2) %>% addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW))
 ```
 
 # Results
