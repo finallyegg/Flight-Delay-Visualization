@@ -121,7 +121,7 @@ m2
 # Exceed 15mins of delay
 
 ```{r}
-a=filter(l2,l2$DEP_DELAY_NEW>15)
+a=filter(l2,l2$DEP_DELAY_NEW>15) 
 pal2=colorQuantile("Blues", a$DEP_DELAY_NEW, n = 4)
 ```
 
