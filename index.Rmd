@@ -5,6 +5,7 @@ subtitle: With the relationship of geographic...
 output: pdf_document
 ---
 
+
 # Introduction
 With more and more people choose plane to travel, aviation industry have a significant growth on quantity of the travelers, so as the demand of the airplane. In the year of 2016, 3.8 billion air travelers fly all over the earth. The International Air Transport Association (IATA) expects 7.2 billion passengers to travel in 2035, a near doubling of air travelers in 2016. In a world of increasing transparency, immediate information and action, flight status and punctuality data has an increasingly important role to play in all of our planning. Everyone from the fuelling company to the catering supplier to the traveller wants access to timely, accurate information about the on-time performace. 
 In my project, I will 
@@ -75,7 +76,12 @@ airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 
 View the Location Map Use "Leaflet"
 ```{r}
-leaflet(airport_joined) %>% setView(-96, 37.8, 3) %>%    addProviderTiles(providers$CartoDB.PositronNoLabels) %>% addMarkers(lng=~LONGITUDE,lat=~LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
+m1=leaflet(airport_joined) %>% 
+   setView(-96, 37.8, 3) %>% 
+   addProviderTiles(providers$CartoDB.PositronNoLabels) %>%  
+   addMarkers(lng=~LONGITUDE,lat=~LATITUDE,
+   popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
+m1
 ```
 
 ggplot
@@ -105,8 +111,11 @@ pal <- colorBin("YlOrRd", domain = l2$DEP_DELAY_NEW)
 
 
 ```{r}
-leaflet(l2) %>% setView(-96, 37.8, 4)%>%addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW),popup = ~format(l2$DEP_DELAY_NEW))
-
+m2=leaflet(l2) %>% 
+    setView(-96, 37.8, 4) %>% 
+    addProviderTiles(providers$CartoDB.Positron) %>%
+    addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW),popup = ~format(l2$DEP_DELAY_NEW))
+m2
 ```
 
 # Exceed 15mins of delay
@@ -119,7 +128,10 @@ pal2=colorQuantile("Blues", a$DEP_DELAY_NEW, n = 4)
 
 
 ```{r}
-leaflet(a) %>% addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(DEP_DELAY_NEW))
+m3=leaflet(a) %>% 
+    addProviderTiles(providers$CartoDB.Positron) %>% 
+    addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(DEP_DELAY_NEW))
+m3
 ```
 
 
