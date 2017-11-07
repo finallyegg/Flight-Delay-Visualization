@@ -74,7 +74,7 @@ airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 
 View the Location Map Use "Leaflet"
 ```{r}
-leaf1=leaflet(airport_joined) %>% setView(-96, 37.8, 3) %>%    addProviderTiles(providers$OpenStreetMap) %>% addMarkers(lng=~LONGITUDE,lat=~LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
+leaf1=leaflet(airport_joined) %>% setView(-96, 37.8, 3) %>%    addProviderTiles(providers$CartoDB.PositronNoLabels) %>% addMarkers(lng=~LONGITUDE,lat=~LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
 leaf1
 ```
 
@@ -105,7 +105,7 @@ pal <- colorBin("YlOrRd", domain = l2$DEP_DELAY_NEW)
 
 
 ```{r}
-leaf2=leaflet(l2) %>% setView(-96, 37.8, 4) %>% addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW))
+leaf2=leaflet(l2) %>% setView(-96, 37.8, 4)%>%addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW))
 leaf2
 ```
 
@@ -113,13 +113,13 @@ leaf2
 
 ```{r}
 a=filter(l2,l2$DEP_DELAY_NEW>15)
-pal2=colorBin("YlOrRd",domain = a$DEP_DELAY_NEW)
+pal2=colorQuantile("Blues", a$DEP_DELAY_NEW, n = 4)
 ```
 
 
 
 ```{r}
-leaflet(a) %>% addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(a$DEP_DELAY_NEW))
+leaflet(a) %>% addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(DEP_DELAY_NEW))
 ```
 
 
