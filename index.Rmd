@@ -105,8 +105,8 @@ pal <- colorBin("YlOrRd", domain = l2$DEP_DELAY_NEW)
 
 
 ```{r}
-leaf2=leaflet(l2) %>% setView(-96, 37.8, 4)%>%addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW))
-leaf2
+leaflet(l2) %>% setView(-96, 37.8, 4)%>%addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW),popup = ~format(l2$DEP_DELAY_NEW))
+
 ```
 
 # Exceed 15mins of delay
