@@ -1,7 +1,8 @@
 ---
 title: "Demostic flight delay in May 2017"
-author: Zeping He
+author: "Zeping He"
 subtitle: With the relationship of geographic...
+output: pdf_document
 ---
 
 # Introduction
@@ -74,8 +75,7 @@ airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 
 View the Location Map Use "Leaflet"
 ```{r}
-leaf1=leaflet(airport_joined) %>% setView(-96, 37.8, 3) %>%    addProviderTiles(providers$CartoDB.PositronNoLabels) %>% addMarkers(lng=~LONGITUDE,lat=~LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
-leaf1
+leaflet(airport_joined) %>% setView(-96, 37.8, 3) %>%    addProviderTiles(providers$CartoDB.PositronNoLabels) %>% addMarkers(lng=~LONGITUDE,lat=~LATITUDE,popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
 ```
 
 ggplot
