@@ -96,11 +96,15 @@ p+
 ```
 
 ### LOOKS HORRIBLE, NOT RUNNNING THIS
+
 Only View Three Major Airlines
-ggplot(subset(May17flight,CARRIER %in% c("AA","UA","DL")),aes(x = DISTANCE, y = DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)
+
+ggplot(subset(May17flight,CARRIER %in% c("AA","UA","DL")),aes(x = DISTANCE, y = 
+
+DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)
 
 
-View the monthly departure and arrival delay 
+##View the monthly departure and arrival delay 
 
 ```{r}
 monthlydata=aggregate(May17flight[, 20:21], list(May17flight$ORIGIN), mean,na.rm=T)
