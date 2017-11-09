@@ -54,6 +54,8 @@ May17flight <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScien
 
 AirportData <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/data/AirportData.csv")
 
+Halfflow <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/data/Halfflow.csv")
+
 ```
 
 We can find some duplicated Data, Remove them
@@ -137,6 +139,17 @@ m3=leaflet(a) %>%
     addProviderTiles(providers$CartoDB.Positron) %>% 
     addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(DEP_DELAY_NEW),popup=~format(a$DEP_DELAY_NEW))
 m3
+```
+
+
+```{r}
+g2=May17flight %>%
+    group_by(ORIGIN) %>%
+    summarise(perDelay =   
+    length(DEP_DELAY_NEW[DEP_DELAY_NEW<=15])/length(DEP_DELAY_NEW))
+
+g2a=left_join(g2,Halfflow,by = "ORIGIN")
+ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point()
 ```
 
 
