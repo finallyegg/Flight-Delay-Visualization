@@ -75,7 +75,7 @@ Obtain Airdata coordinate by "left-join"
 airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 
 ```
-
+##Briefly view the distribution of the public airport
 View the Location Map Use "Leaflet"
 ```{r}
 m1=leaflet(airport_joined) %>% 
@@ -107,6 +107,7 @@ DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)
 
 
 ##View the monthly departure and arrival delay 
+Hover on the point to view the avg.delay time
 
 ```{r}
 monthlydata=aggregate(May17flight[, 12:13], list(May17flight$ORIGIN), mean,na.rm=T)
@@ -121,11 +122,12 @@ pal <- colorBin("YlOrRd", domain = l2$DEP_DELAY_NEW)
 m2=leaflet(l2) %>% 
     setView(-96, 37.8, 4) %>% 
     addProviderTiles(providers$CartoDB.Positron) %>%
-    addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW),popup = ~format(l2$DEP_DELAY_NEW))
+    addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW),label = ~format(l2$DEP_DELAY_NEW))
 m2
 ```
 
-# Exceed 15mins of delay
+## Exceed 15mins of delay
+Hover on the point to view the avg.delay time
 
 ```{r}
 a=filter(l2,l2$DEP_DELAY_NEW>15) 
@@ -137,11 +139,11 @@ pal2=colorQuantile("Blues", a$DEP_DELAY_NEW, n = 4)
 ```{r}
 m3=leaflet(a) %>% 
     addProviderTiles(providers$CartoDB.Positron) %>% 
-    addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(DEP_DELAY_NEW),popup=~format(a$DEP_DELAY_NEW))
+    addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(DEP_DELAY_NEW),label=~format(a$DEP_DELAY_NEW))
 m3
 ```
 
-
+## Relationship between Punctuality rate and Passager flow
 ```{r}
 g2=May17flight %>%
     group_by(ORIGIN) %>%
@@ -149,7 +151,8 @@ g2=May17flight %>%
     length(DEP_DELAY_NEW[DEP_DELAY_NEW<=15])/length(DEP_DELAY_NEW))
 
 g2a=left_join(g2,Halfflow,by = "ORIGIN")
-ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point()
+ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate
+", y="Passager flow")
 ```
 
 
