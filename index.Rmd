@@ -7,14 +7,13 @@ output: pdf_document
 
 
 # Introduction
-With more and more people choose plane to travel, aviation industry have a significant growth on quantity of the travelers, so as the demand of the airplane. In the year of 2016, 3.8 billion air travelers fly all over the earth. The International Air Transport Association (IATA) expects 7.2 billion passengers to travel in 2035, a near doubling of air travelers in 2016. In a world of increasing transparency, immediate information and action, flight status and punctuality data has an increasingly important role to play in all of our planning. Everyone from the fuelling company to the catering supplier to the traveller wants access to timely, accurate information about the on-time performace. 
-In my project, I will 
+With more and more people choose the plane to travel, the world aviation industry has a significant growth in the quantity of the travelers, so as the demand of the airplane. In the year of 2016, 3.8 billion air travelers fly all over the earth. The International Air Transport Association (IATA) expects 7.2 billion passengers to travel in 2035, a near doubling of air travelers in 2016. In a world of increasing transparency, immediate information and action, flight status and punctuality data have an increasingly important role to play in all of our planning. Everyone from the fuelling company to the catering supplier to the traveler wants access to timely, accurate information about the on-time performance. In my project, I will 
 
-**Focus on US demostic airline on-time data of May 2017. Test the relationship between "Distance" and "Delay time"**
+**Focus on US domestic airline on-time data for May 2017. Test the relationship between "Distance" and "Delay time"**
 
-**How the severity of deplayed airport appears to have geographic pattern of distribution.**
+**How the severity of delayed airport appears to have geographic pattern of distribution.**
 
-The hypothsis toward this topic are a) as the flight distance increase, the percentage and the degree of delayed flight will increase, reason is long distance flight could be more affect by the Objective factors on the midway (i.e: weather conditions of the routing) before departure.  b) By the interactive maps shows, the geographic pattern will become a dominate. Similarities could be found in the regional group or cluster of the airport. 
+The hypothesis of this topic are. a) as the flight distance increase, the percentage and the degree of delayed flight will increase. The reason is long distance flight could be more effective by the Objective factors on the midway (i.e: weather conditions of the routing) before departure.  b) By the interactive maps shows, the geographic pattern will become a dominate. Similarities could be found in the regional group or cluster of the airport. 
 
 > “People want to fly. Demand for air travel over the next two decades is set to double. Enabling people and nations to trade, explore, and share the benefits of innovation and economic prosperity makes our world a better place,”   ~ Alexandre de Juniac, IATA’s Director General and CEO. 
 
@@ -44,6 +43,7 @@ library(ggplot2)
 library(maps)
 library(spocc)
 library(leaflet)
+library(rbokeh)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 ```
 
@@ -151,10 +151,14 @@ g2=May17flight %>%
     length(DEP_DELAY_NEW[DEP_DELAY_NEW<=15])/length(DEP_DELAY_NEW))
 
 g2a=left_join(g2,Halfflow,by = "ORIGIN")
-ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate
-", y="Passager flow")
+#ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate
+#", y="Passager flow")
 ```
 
+##Good looking and interactive Plot 
+```{r}
+figure() %>% ly_points(perDelay,Flow,data=g2a, hover=Description)
+```
 
 # Results
 
