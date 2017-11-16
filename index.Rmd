@@ -155,7 +155,7 @@ g2a=left_join(g2,Halfflow,by = "ORIGIN")
 ```
 
 ##Good looking and interactive Plot 
-```{r, warning=F}
+```{r, warning=F,message=F}
 figure() %>% ly_points(perDelay,Flow,data=g2a, hover=Description)
 ```
 
