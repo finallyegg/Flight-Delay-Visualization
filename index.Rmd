@@ -151,12 +151,14 @@ g2=May17flight %>%
     length(DEP_DELAY_NEW[DEP_DELAY_NEW<=15])/length(DEP_DELAY_NEW))
 
 g2a=left_join(g2,Halfflow,by = "ORIGIN")
+g2a50=head(arrange(g2a,desc(Flow)), n = 50)
 #ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate",y="Passager flow")
 ```
 
 ##Good looking and interactive Plot 
 ```{r, warning=F,message=F}
 figure() %>% ly_points(perDelay,Flow,data=g2a, hover=Description)
+figure() %>% ly_points(perDelay,Flow,data=g2a50, hover=list(Description,Flow,perDelay))
 ```
 
 # Results
