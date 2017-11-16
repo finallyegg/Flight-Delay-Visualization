@@ -48,7 +48,7 @@ knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 ```
 
 First you need to import airline performance data.
-```{r}
+```{r, message=F, warning=F}
 library(readr)
 May17flight <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/data/May17flight.csv")
 
@@ -59,25 +59,25 @@ Halfflow <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_
 ```
 
 We can find some duplicated Data, Remove them
-```{r}
+```{r, message=F, warning=F}
 AirportData_nd=AirportData[!duplicated(AirportData$Code),]
 ```
 
 You can view the domestic airport list by use "unique"
-```{r}
+```{r, warning=F}
 codeunique=data.frame(unique(May17flight$ORIGIN))
 colnames(codeunique)="Code"
 length(unique(May17flight$ORIGIN))
 ```
 
 Obtain Airdata coordinate by "left-join"
-```{r}
+```{r, message=F, warning=F}
 airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 
 ```
 ##Briefly view the distribution of the public airport
 View the Location Map Use "Leaflet"
-```{r}
+```{r, warning=F,message=F}
 m1=leaflet(airport_joined) %>% 
    setView(-96, 37.8, 3) %>% 
    addProviderTiles(providers$CartoDB.PositronNoLabels) %>%  
@@ -87,7 +87,7 @@ m1
 ```
 
 ggplot
-```{r}
+```{r, warning=F}
 cutoffdelay <- data.frame( x = c(-Inf, Inf), y = 15, cutoff = factor(15) )
 p=ggplot(subset(May17flight,!is.na(DEP_DELAY_NEW)),aes(x=DISTANCE,y=DEP_DELAY_NEW))
 p+
@@ -109,7 +109,7 @@ DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)
 ##View the monthly departure and arrival delay 
 Hover on the point to view the avg.delay time
 
-```{r}
+```{r, warning=F,message=F}
 monthlydata=aggregate(May17flight[, 12:13], list(May17flight$ORIGIN), mean,na.rm=T)
 colnames(monthlydata)[colnames(monthlydata)=="Group.1"]="Code"
 l2=left_join(monthlydata, AirportData_nd, by = "Code")
@@ -118,7 +118,7 @@ pal <- colorBin("YlOrRd", domain = l2$DEP_DELAY_NEW)
 ```
 
 
-```{r}
+```{r, warning=F,message=F}
 m2=leaflet(l2) %>% 
     setView(-96, 37.8, 4) %>% 
     addProviderTiles(providers$CartoDB.Positron) %>%
@@ -129,14 +129,14 @@ m2
 ## Exceed 15mins of delay
 Hover on the point to view the avg.delay time
 
-```{r}
+```{r, warning=F}
 a=filter(l2,l2$DEP_DELAY_NEW>15) 
 pal2=colorQuantile("Blues", a$DEP_DELAY_NEW, n = 4)
 ```
 
 
 
-```{r}
+```{r, warning=F}
 m3=leaflet(a) %>% 
     addProviderTiles(providers$CartoDB.Positron) %>% 
     addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(DEP_DELAY_NEW),label=~format(a$DEP_DELAY_NEW))
@@ -144,19 +144,18 @@ m3
 ```
 
 ## Relationship between Punctuality rate and Passager flow
-```{r}
+```{r, warning=F,message=F}
 g2=May17flight %>%
     group_by(ORIGIN) %>%
     summarise(perDelay =   
     length(DEP_DELAY_NEW[DEP_DELAY_NEW<=15])/length(DEP_DELAY_NEW))
 
 g2a=left_join(g2,Halfflow,by = "ORIGIN")
-#ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate
-#", y="Passager flow")
+#ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate",y="Passager flow")
 ```
 
 ##Good looking and interactive Plot 
-```{r}
+```{r, warning=F}
 figure() %>% ly_points(perDelay,Flow,data=g2a, hover=Description)
 ```
 
