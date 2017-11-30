@@ -122,10 +122,10 @@ pal <- colorBin("YlOrRd", domain = l2$DEP_DELAY_NEW)
 popuplabels <- paste(l2$DISPLAY_AIRPORT_NAM,"Airport",
                  "<br>Average Delay Here is</br>",round(l2$DEP_DELAY_NEW),"minutes")
 
-m2=leaflet(l2) %>% 
+m2=leaflet(finished) %>% 
   setView(-96, 37.8, 4) %>% 
   addProviderTiles(providers$CartoDB.Positron) %>%
-  addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW),popup = popuplabels)
+  addCircleMarkers(color=~pal(finished$DEP_DELAY_NEW),popup = popuplabels,radius = ~sqrt(finished$Flow)*0.01)
 m2
 ```
 
@@ -142,7 +142,7 @@ pal2=colorQuantile("Blues", a$DEP_DELAY_NEW, n = 4)
 ```{r, warning=F}
 m3=leaflet(a) %>% 
     addProviderTiles(providers$CartoDB.Positron) %>% 
-    addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(DEP_DELAY_NEW),label=~format(a$DEP_DELAY_NEW))
+    addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(DEP_DELAY_NEW),popup = popuplabels,radius = ~sqrt(finished$Flow))
 m3
 ```
 
