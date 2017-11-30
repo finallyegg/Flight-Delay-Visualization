@@ -87,7 +87,7 @@ m1
 ```
 
 ggplot
-```{r, warning=F}
+{r, warning=F}
 cutoffdelay <- data.frame( x = c(-Inf, Inf), y = 15, cutoff = factor(15) )
 p=ggplot(subset(May17flight,!is.na(DEP_DELAY_NEW)),aes(x=DISTANCE,y=DEP_DELAY_NEW))
 p+
@@ -95,7 +95,7 @@ p+
    geom_line(aes( x, y, linetype = cutoff , colour="Blue"), cutoffdelay)+
    stat_summary(aes(y = DEP_DELAY_NEW,group=1), fun.y=mean, colour="red", geom="line",group=1)
 
-```
+
 
 ### LOOKS HORRIBLE, NOT RUNNNING THIS
 
@@ -119,10 +119,13 @@ pal <- colorBin("YlOrRd", domain = l2$DEP_DELAY_NEW)
 
 
 ```{r, warning=F,message=F}
+popuplabels <- paste(l2$DISPLAY_AIRPORT_NAM,"Airport",
+                 "<br>Average Delay Here is</br>",round(l2$DEP_DELAY_NEW),"minutes")
+
 m2=leaflet(l2) %>% 
-    setView(-96, 37.8, 4) %>% 
-    addProviderTiles(providers$CartoDB.Positron) %>%
-    addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW),label = ~format(l2$DEP_DELAY_NEW))
+  setView(-96, 37.8, 4) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW),popup = popuplabels)
 m2
 ```
 
