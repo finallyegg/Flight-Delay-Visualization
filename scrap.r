@@ -2,7 +2,7 @@ leaflet(l2) %>%
   setView(-96, 37.8, 4) %>% 
   addProviderTiles(providers$CartoDB.Positron) %>%
   addCircleMarkers(color=~pal(l2$DEP_DELAY_NEW),popup = paste("Average Delay is",round(l2$DEP_DELAY_NEW)))
-
+.
 
 figure() %>% ly_points(perDelay,Flow,data=g2a, hover=Description)
 figure() %>% ly_points(perDelay,Flow,data=g2a50, hover=list(Description,Flow,perDelay))
