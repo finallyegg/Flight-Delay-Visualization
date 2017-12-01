@@ -168,7 +168,7 @@ figure() %>% ly_points(perDelay,Flow,data=g2a50, hover=list(Description,Flow,per
 
 # Results
 
-Show tables, plots, etc. and describe them.
+Show tables, plots, etc. and describe the.
 
 # Conclusions
 
