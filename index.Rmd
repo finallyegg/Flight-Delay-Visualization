@@ -122,6 +122,8 @@ pal <- colorBin("YlOrRd", domain = l2$DEP_DELAY_NEW)
 popuplabels <- paste(l2$DISPLAY_AIRPORT_NAM,"Airport",
                  "<br>Average Delay Here is</br>",round(l2$DEP_DELAY_NEW),"minutes")
 
+finished=left_join(Halfflow, l2, by = c("ORIGIN" = "Code"))
+
 m2=leaflet(finished) %>% 
   setView(-96, 37.8, 4) %>% 
   addProviderTiles(providers$CartoDB.Positron) %>%

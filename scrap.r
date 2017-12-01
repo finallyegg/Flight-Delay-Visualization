@@ -7,6 +7,7 @@ leaflet(l2) %>%
 figure() %>% ly_points(perDelay,Flow,data=g2a, hover=Description)
 figure() %>% ly_points(perDelay,Flow,data=g2a50, hover=list(Description,Flow,perDelay))
 
+finished=left_join(Halfflow,l2,by=c("ORIGIN","Code"))
 
 content <- paste(sep = "<br/>",
                  "<b><a>l2$DISPLAY_AIRPORT_NAME</a></b>","
