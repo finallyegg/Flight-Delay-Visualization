@@ -135,16 +135,19 @@ m2
 Hover on the point to view the avg.delay time
 
 ```{r, warning=F}
-a=filter(l2,l2$DEP_DELAY_NEW>15) 
-pal2=colorQuantile("Blues", a$DEP_DELAY_NEW, n = 4)
+a=filter(finished,finished$DEP_DELAY_NEW>15) 
+pal2=colorQuantile("Blues", finished$DEP_DELAY_NEW, n = 5)
 ```
 
 
 
 ```{r, warning=F}
+popuplabels2 <- paste(a$DISPLAY_AIRPORT_NAME,"Airport",
+                 "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes")
+
 m3=leaflet(a) %>% 
     addProviderTiles(providers$CartoDB.Positron) %>% 
-    addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(DEP_DELAY_NEW),popup = popuplabels,radius = ~sqrt(finished$Flow))
+    addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(a$DEP_DELAY_NEW),popup = popuplabels2,radius = ~sqrt(a$Flow)*0.01)
 m3
 ```
 
