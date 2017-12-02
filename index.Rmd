@@ -2,7 +2,7 @@
 title: "Visualization Demostic flight delay in May 2017"
 author: "Zeping He"
 subtitle: With the relationship of geographic...
-output: pdf_document
+output: html_document
 ---
 
 
@@ -44,6 +44,7 @@ library(maps)
 library(spocc)
 library(leaflet)
 library(rbokeh)
+library(widgetframe)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 ```
 
@@ -82,7 +83,8 @@ m1=leaflet(airport_joined) %>%
    setView(-96, 37.8, 3) %>% 
    addProviderTiles(providers$CartoDB.PositronNoLabels) %>%  
    addMarkers(lng=~LONGITUDE,lat=~LATITUDE,
-   popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions())
+   popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions()) %>% 
+   frameWidget(width = "100%",height = 500)
 m1
 ```
 
@@ -128,10 +130,23 @@ popuplabels <- paste(finished$DISPLAY_AIRPORT_NAME,"Airport",
 
 m2=leaflet(finished) %>% 
   setView(-96, 37.8, 4) %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  addCircleMarkers(color=~pal(finished$DEP_DELAY_NEW),popup = popuplabels,radius = ~sqrt(finished$Flow)*0.01,fillColor =~pal(finished$DEP_DELAY_NEW),fillOpacity = 0.7, opacity = 0.7 ) %>% 
-  addLegend(pal = pal, values = ~DEP_DELAY_NEW, opacity = 0.7, title = "Avg.Delaytime <br>in (minutes)</br>",position = "bottomright") %>% 
-  setView(-96, 37.8, 4)
+  addProviderTiles(providers$CartoDB.DarkMatter) %>%
+  addCircleMarkers(
+    stroke = FALSE,
+    color=~pal(finished$DEP_DELAY_NEW),
+    popup = popuplabels,
+    radius = ~sqrt(finished$Flow)*0.01,
+    fillColor =~pal(finished$DEP_DELAY_NEW),
+    fillOpacity = 0.7, opacity = 0.7 ) %>% 
+  addLegend(
+    pal = pal, 
+    values = ~DEP_DELAY_NEW, 
+    opacity = 0.7, 
+    title = "Avg.Delaytime <br>in (minutes)</br>",
+    position = "bottomright") %>% 
+  setView(-96, 37.8, 4) %>% 
+  frameWidget(width = "100%",height = 600)
+
   
 m2
 ```
@@ -152,10 +167,24 @@ popuplabels2 <- paste(a$DISPLAY_AIRPORT_NAME,"Airport",
                  "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes")
 
 m3=leaflet(a) %>% 
-    addProviderTiles(providers$CartoDB.Positron) %>% 
-    addCircleMarkers(lng=a$LONGITUDE, lat=a$LATITUDE,color=~pal2(a$DEP_DELAY_NEW),popup = popuplabels2,radius = ~sqrt(a$Flow)*0.01,fillColor =~pal2(a$DEP_DELAY_NEW),fillOpacity = 0.7, opacity = 0.7) %>% 
-    addLegend(pal = pal2, values = ~DEP_DELAY_NEW, opacity = 0.7, title = "Avg.Delaytime <br>in (minutes)</br>",position = "bottomleft") %>% 
-  setView(-96, 37.8, 4)
+    addProviderTiles(providers$CartoDB.DarkMatter) %>% 
+    addCircleMarkers(
+      lng=a$LONGITUDE, lat=a$LATITUDE,
+      color=~pal2(a$DEP_DELAY_NEW),
+      popup = popuplabels2,
+      radius = ~sqrt(a$Flow)*0.01,
+      fillColor =~pal2(a$DEP_DELAY_NEW),
+      fillOpacity = 0.7, 
+      opacity = 0.7,
+      stroke = FALSE) %>% 
+    addLegend(
+      pal = pal2, 
+      values = ~DEP_DELAY_NEW, 
+      opacity = 0.7, 
+      title = "Avg.Delaytime <br>in (minutes)</br>",
+      position = "bottomleft") %>% 
+  setView(-96, 37.8, 4) %>% 
+  frameWidget(width = "100%",height = 500)
 m3
 ```
 
@@ -181,10 +210,11 @@ figure() %>% ly_points(perDelay,Flow,data=g2a50, hover=list(Description,Flow,per
 ```{r, warning=F,message=F}
 cor(a$Flow, a$DEP_DELAY_NEW,  method = "pearson", use = "complete.obs")
 
+##The corrleation shows the relationship between two variables, from -1 to 1. Bigger abs value is, more clear the relation.
 ```
 # Conclusions
 
-The relationship between flight delay time and  distance or airport passager flow is not clear
+The relationship between flight delay time and  distance or airport passager flow is not clear. 
 
 # References
 
