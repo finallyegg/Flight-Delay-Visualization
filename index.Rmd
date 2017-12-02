@@ -45,6 +45,7 @@ library(spocc)
 library(leaflet)
 library(rbokeh)
 library(widgetframe)
+library(ggpubr)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 ```
 
@@ -211,7 +212,14 @@ figure() %>% ly_points(perDelay,Flow,data=g2a50, hover=list(Description,Flow,per
 cor(a$Flow, a$DEP_DELAY_NEW,  method = "pearson", use = "complete.obs")
 
 ##The corrleation shows the relationship between two variables, from -1 to 1. Bigger abs value is, more clear the relation.
+
+ggscatter(g2a50, x = "perDelay", y = "Flow", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Percentage of delay", ylab = "Passager Flow")
 ```
+
+
 # Conclusions
 
 The relationship between flight delay time and  distance or airport passager flow is not clear. 

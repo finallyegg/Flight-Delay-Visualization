@@ -348,6 +348,7 @@ library(spocc)
 library(leaflet)
 library(rbokeh)
 library(widgetframe)
+library(ggpubr)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling</code></pre>
 <p>First you need to import airline performance data.</p>
 <pre class="r"><code>library(readr)
@@ -480,7 +481,13 @@ g2a50=head(arrange(g2a,desc(Flow)), n = 50)
 <h1>Results</h1>
 <pre class="r"><code>cor(a$Flow, a$DEP_DELAY_NEW,  method = &quot;pearson&quot;, use = &quot;complete.obs&quot;)</code></pre>
 <pre><code>## [1] -0.1351033</code></pre>
-<pre class="r"><code>##The corrleation shows the relationship between two variables, from -1 to 1. Bigger abs value is, more clear the relation.</code></pre>
+<pre class="r"><code>##The corrleation shows the relationship between two variables, from -1 to 1. Bigger abs value is, more clear the relation.
+
+ggscatter(g2a50, x = &quot;perDelay&quot;, y = &quot;Flow&quot;, 
+          add = &quot;reg.line&quot;, conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = &quot;pearson&quot;,
+          xlab = &quot;Percentage of delay&quot;, ylab = &quot;Passager Flow&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 <div id="conclusions" class="section level1">
 <h1>Conclusions</h1>
