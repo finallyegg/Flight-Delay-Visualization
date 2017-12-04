@@ -46,6 +46,7 @@ library(leaflet)
 library(rbokeh)
 library(widgetframe)
 library(ggpubr)
+library(stats)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 ```
 
