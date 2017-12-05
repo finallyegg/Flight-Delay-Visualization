@@ -51,7 +51,54 @@ linedf %>%
   addMarkers(lat = "LATITUDE.y", lng = "LONGITUDE.y")
 
 JFK1=linedf %>% 
-  filter(ORIGIN=="JFK",DEST=="BUF"|"LAX") 
+  filter(ORIGIN=="JFK")
+JFK=AirportData_nd %>% 
+  filter(Code == "JFK")
+
+
+
+
+col.1 <- adjustcolor("orange red", alpha=0.4)
+col.2 <- adjustcolor("blue", alpha=0.9)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(50)
+
+map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+
+for (i in (1:dim(JFK1)[1])) { 
+  inter=gcIntermediate(c(jfk$lon[1], jfk$lat[1]), c(JFK1$LONGITUDE.y[i], JFK1$LATITUDE.y[i]), n=100)
+  edge.ind <-(JFK1[i,]$dep_delay_)
+  range(edge.ind)
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+}
+
+
+
+
+
+
+
+
+
+
+map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+
+for (i in (1:dim(JFK1)[1])) { 
+  inter=gcIntermediate(c(jfk$lon[1], jfk$lat[1]), c(JFK1$LONGITUDE.y[i], JFK1$LATITUDE.y[i]), n=100)
+  edge.ind <- round(JFK1[i,]$dep_delay_) 
+  lines(inter, lwd=0.1, col="turquoise2")   
+}
+
+edge.ind <- round(JFK1[i,]$dep_delay_) 
+
+
+
+for (i in (1:dim(usairports)[1])) { 
+  inter <- gcIntermediate(c(jfk$lon[1], jfk$lat[1]), c(usairports$lon[i], usairports$lat[i]), n=200)
+  lines(inter, lwd=0.1, col="turquoise2")    
+}
+
+library(nycflights13)
 
 mydf <- data.frame(Observation = c("A", "B"),
                    InitialLat = c(42.94111,33.94250),

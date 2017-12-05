@@ -20,23 +20,13 @@ The hypothesis of this topic are. a) as the flight distance increase, the percen
 
 > “Punctuality is the soul of business” ~Thomas Chandler Halliburton 
 
-# Materials and methods
+# Materials and methods 
 
-Data Source:
+<br>
 
-* Filght on-time Performance --- from BUREAU OF TRANSPORTATION STATISTICS
-* Airport Location Data --- BUREAU OF TRANSPORTATION STATISTICS
+## Data Preparetion {.tabset}
 
-Poposed Mehod:
-
-1. Data prepartion (Creat another dataframe by Merge two csv file )
-2. General view the airport location distribubtion
-3. Use ggplot to see the relationship between distance 
-
-See [http://rmarkdown.rstudio.com/](http://rmarkdown.rstudio.com/) for all the amazing things you can do.
-
-Load any required packages in a code chunk (you may need to install some packages):
-# Data
+### Packages
 ```{r, message=F, warning=F}
 library(dplyr)
 library(ggplot2)
@@ -47,45 +37,71 @@ library(rbokeh)
 library(widgetframe)
 library(ggpubr)
 library(stats)
+library(geosphere)
+library(readr)
+library(DT)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 ```
 
-First you need to import airline performance data.
+###Data Source:
+Click the hyperlink to select which variables of the data from BTS Website you want use. 
+
+
+* <a href="https://www.transtats.bts.gov/Tables.asp?DB_ID=120&DB_Name=Airline%20On-Time%20Performance%20Data&DB_Short_Name=On-Time"> Filght on-time Performance </a> --- 'Airline On-Time Performance Data'  From BUREAU OF TRANSPORTATION STATISTICS
+* <a href= "https://www.transtats.bts.gov/Tables.asp?DB_ID=595&DB_Name=Aviation%20Support%20Tables"> Airport Location Data </a> --- 'Aviation Support Tables'  BUREAU OF TRANSPORTATION STATISTICS
+
+
+To save time, I already have three tables prepared. 
 ```{r, message=F, warning=F}
-library(readr)
+
 May17flight <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/data/May17flight.csv")
 
 AirportData <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/data/AirportData.csv")
 
 Halfflow <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_Project/master/data/Halfflow.csv")
 
+
 ```
 
-We can find some duplicated Data, Remove them
+
+### Data Processing
+
+
+Remove duplicated Data in AirportData_table
 ```{r, message=F, warning=F}
 AirportData_nd=AirportData[!duplicated(AirportData$Code),]
 ```
 
-You can view the domestic airport list by use "unique"
-```{r, warning=F}
+Assign each airport a coordinate by using "left-join" function.
+(Because we can found same 3-digit airport Code under each table. )
+```{r, message=F, warning=F}
 codeunique=data.frame(unique(May17flight$ORIGIN))
 colnames(codeunique)="Code"
-length(unique(May17flight$ORIGIN))
-```
-
-Obtain Airdata coordinate by "left-join"
-```{r, message=F, warning=F}
 airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 
 ```
+
+
+
+
 ##Briefly view the distribution of the public airport
+
+Check the quantity of Airport in the databese 
+```{r, warning=F}
+length(unique(May17flight$ORIGIN))
+```
+
 View the Location Map Use "Leaflet"
 ```{r, warning=F,message=F}
 m1=leaflet(airport_joined) %>% 
    setView(-96, 37.8, 3) %>% 
-   addProviderTiles(providers$CartoDB.PositronNoLabels) %>%  
-   addMarkers(lng=~LONGITUDE,lat=~LATITUDE,
-   popup=airport_joined$DISPLAY_AIRPORT_NAME,clusterOptions = markerClusterOptions()) %>% 
+   addProviderTiles(providers$CartoDB.DarkMatterNoLabels) %>%  
+   addCircleMarkers(lng=~LONGITUDE,lat=~LATITUDE,
+   label=airport_joined$DISPLAY_AIRPORT_NAME,
+   radius = 2,
+   stroke = F,
+   fillColor = "Orange",
+   fillOpacity = 1) %>% 
    frameWidget(width = "100%",height = 500)
 m1
 ```
@@ -101,7 +117,6 @@ p+
 
 
 
-### LOOKS HORRIBLE, NOT RUNNNING THIS
 
 Only View Three Major Airlines
 
@@ -111,7 +126,7 @@ DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)
 
 
 ##View the monthly departure and arrival delay 
-Hover on the point to view the avg.delay time
+Click on the point to view the avg.delay time
 
 ```{r, warning=F,message=F}
 monthlydata=aggregate(May17flight[, 12:13], list(May17flight$ORIGIN), mean,na.rm=T)
@@ -219,6 +234,9 @@ ggscatter(g2a50, x = "perDelay", y = "Flow",
           cor.coef = TRUE, cor.method = "pearson",
           xlab = "Percentage of delay", ylab = "Passager Flow")
 ```
+
+
+<iframe width="100%" height="520" frameborder="0" src="https://finallyegg.carto.com/builder/70b6bef3-8a21-49ac-bfb5-61835c359fe9/embed" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
 
 
 # Conclusions
