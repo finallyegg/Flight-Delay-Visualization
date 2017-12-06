@@ -20,13 +20,12 @@ The hypothesis of this topic are. a) as the flight distance increase, the percen
 
 > “Punctuality is the soul of business” ~Thomas Chandler Halliburton 
 
-# Materials and methods 
+# Materials and methods {.tabset}
 
-<br>
 
-## Data Preparetion {.tabset}
 
-### Packages
+
+## Packages
 ```{r, message=F, warning=F}
 library(dplyr)
 library(ggplot2)
@@ -43,7 +42,7 @@ library(DT)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 ```
 
-###Data Source:
+##Data Source:
 Click the hyperlink to select which variables of the data from BTS Website you want use. 
 
 
@@ -64,16 +63,23 @@ Halfflow <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_
 ```
 
 
-### Data Processing
+## Data Processing
 
+**Check if the data have duplicated**
+
+```{r, message=F, warning=F}
+length(AirportData$Code[duplicated(AirportData$Code)])
+```
+
+The result said there are 1449 Airport which have the same 'Code' but different detailed named. But the location is the same. 
 
 Remove duplicated Data in AirportData_table
 ```{r, message=F, warning=F}
 AirportData_nd=AirportData[!duplicated(AirportData$Code),]
 ```
 
-Assign each airport a coordinate by using "left-join" function.
-(Because we can found same 3-digit airport Code under each table. )
+Georeference each airport by using "left-join" function, to assign each Origin Airport a coordinate base on their 3-digit 'Code', Left-join is based on the same string (names) of two tables. 
+
 ```{r, message=F, warning=F}
 codeunique=data.frame(unique(May17flight$ORIGIN))
 colnames(codeunique)="Code"
@@ -82,61 +88,74 @@ airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 ```
 
 
+## Methodology
+Because of the airline on-time data was described by the departure delay and arrival delay. Each flight can be considered as two spatial point -- Departure airport and Arrival airport. To study the punctuality rate of each flight, focusing on departure airport on time rate is important. 
+
+ **1.Extract and aggregate the origin and destination location from the flight database **
+
+Since we have each flight origin and destination, we can group these flight by their origin location. By using 'group by' or 'aggregate' function, to group data by certain variable(s).
+
+In this case, I am using 'mean' function to obtain the airport average delay value, so each seperate flight data will be classified and transformed as the airport data.
 
 
-##Briefly view the distribution of the public airport
+Then perform left-join serval times to generate a 'final' table contains 'Airport Code', 'Delay Time', 'Passager Flow' and 'coordinate'
 
-Check the quantity of Airport in the databese 
-```{r, warning=F}
-length(unique(May17flight$ORIGIN))
+```{r, warning=F,message=F}
+#In this case, I use 'aggregate' to extract the 12th and 13th column from May17flight data table, these columns contains the departure and arrival delay time for each flight. 
+monthlydata=aggregate(May17flight[, 12:13], list(May17flight$ORIGIN), mean,na.rm=T)
+#Rename the column from 'Group.1' to 'Code' to make it easier to merage in next steps
+colnames(monthlydata)[colnames(monthlydata)=="Group.1"]="Code"
+#add geographical coordinates information to each airport
+l2=left_join(monthlydata, AirportData_nd, by = "Code")
+#add passager traffic information
+finished=left_join(l2, Halfflow, by = c("Code" = "ORIGIN"))
 ```
 
-View the Location Map Use "Leaflet"
+<br>
+
+
+ **2.Using leaflet Visualizing the  Airport average delay time **
+
+Leaflet is one of the most popular open-source JavaScript libraries for interactive maps. It’s used by websites ranging from The New York Times and The Washington Post to GitHub and Flickr, as well as GIS specialists like OpenStreetMap, Mapbox, and CartoDB. This R package makes it easy to integrate and control Leaflet maps in R.
+
+<br>
+
+a. Distribution of US public airport
+   To generate a basic knowledge of the airport spatial distribution, I made a point map to show the distribution. 
+
 ```{r, warning=F,message=F}
 m1=leaflet(airport_joined) %>% 
+  #set the center point and scale level (3)
    setView(-96, 37.8, 3) %>% 
+  #add provider base map
    addProviderTiles(providers$CartoDB.DarkMatterNoLabels) %>%  
    addCircleMarkers(lng=~LONGITUDE,lat=~LATITUDE,
+  #this label commands creates a hover 
    label=airport_joined$DISPLAY_AIRPORT_NAME,
    radius = 2,
    stroke = F,
    fillColor = "Orange",
    fillOpacity = 1) %>% 
    frameWidget(width = "100%",height = 500)
-m1
 ```
 
-ggplot
-{r, warning=F}
-cutoffdelay <- data.frame( x = c(-Inf, Inf), y = 15, cutoff = factor(15) )
-p=ggplot(subset(May17flight,!is.na(DEP_DELAY_NEW)),aes(x=DISTANCE,y=DEP_DELAY_NEW))
-p+
-   geom_point(alpha=0.1) +
-   geom_line(aes( x, y, linetype = cutoff , colour="Blue"), cutoffdelay)+
-   stat_summary(aes(y = DEP_DELAY_NEW,group=1), fun.y=mean, colour="red", geom="line",group=1)
+<br>
 
-
-
-
-Only View Three Major Airlines
-
-ggplot(subset(May17flight,CARRIER %in% c("AA","UA","DL")),aes(x = DISTANCE, y = 
-
-DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)
-
-
-##View the monthly departure and arrival delay 
-Click on the point to view the avg.delay time
+b. Create a color ramp based on given interval and certatin domain.
+   In this case, interval is set every 15 minutes
 
 ```{r, warning=F,message=F}
-monthlydata=aggregate(May17flight[, 12:13], list(May17flight$ORIGIN), mean,na.rm=T)
-colnames(monthlydata)[colnames(monthlydata)=="Group.1"]="Code"
-l2=left_join(monthlydata, AirportData_nd, by = "Code")
-finished=left_join(Halfflow, l2, by = c("ORIGIN" = "Code"))
+#set the interval every 15minutes
 colbm2=c(0,15,30,45,60,Inf)
+#set the color ramp based on the given interval and use delay time as a domin
 pal <- colorBin("YlOrRd", domain = finished$DEP_DELAY_NEW,bins = colbm2)
 
 ```
+
+<br>
+
+c. Create a circle point map of airport, assign a color ramp for the linear delay percentage. The radius of the 
+   circle represents the numberic of passager traffic in that airport. 
 
 
 ```{r, warning=F,message=F}
@@ -148,6 +167,7 @@ popuplabels <- paste(finished$DISPLAY_AIRPORT_NAME,"Airport",
 m2=leaflet(finished) %>% 
   setView(-96, 37.8, 4) %>% 
   addProviderTiles(providers$CartoDB.DarkMatter) %>%
+  #add markers and customize the properities
   addCircleMarkers(
     stroke = FALSE,
     color=~pal(finished$DEP_DELAY_NEW),
@@ -155,6 +175,7 @@ m2=leaflet(finished) %>%
     radius = ~sqrt(finished$Flow)*0.01,
     fillColor =~pal(finished$DEP_DELAY_NEW),
     fillOpacity = 0.7, opacity = 0.7 ) %>% 
+  #set Legend properities
   addLegend(
     pal = pal, 
     values = ~DEP_DELAY_NEW, 
@@ -164,12 +185,9 @@ m2=leaflet(finished) %>%
   setView(-96, 37.8, 4) %>% 
   frameWidget(width = "100%",height = 600)
 
-  
-m2
 ```
 
-## Exceed 15mins of delay
-Hover on the point to view the avg.delay time
+d.Delay which exceed 15 minutes
 
 ```{r, warning=F}
 a=filter(finished,finished$DEP_DELAY_NEW>15)
@@ -203,6 +221,168 @@ m3=leaflet(a) %>%
   setView(-96, 37.8, 4) %>% 
   frameWidget(width = "100%",height = 500)
 m3
+``` 
+
+<br>
+
+ **Adding Curved Flight path using R's graphic Package**
+ 
+ a.Since we finish visualize the departure delay analysis. Next step is visualize flight path from a airport.
+   This database contain start point and end point, simplized thousands flight records into one point to point line by taking the median
+```{r, warning=F,message=F}
+linedf=May17flight %>%
+       group_by(ORIGIN,DEST) %>% 
+       summarise(dep_delay_ = mean(DEP_DELAY_NEW,na.rm = T),distance = median(DISTANCE,na.rm = T)) %>% 
+       left_join(AirportData_nd,by = c("ORIGIN" = "Code")) %>% 
+       left_join(AirportData_nd,by = c("DEST" = "Code"))
+```
+
+
+<br>
+<br>
+
+
+# Results
+
+##Briefly view the distribution of the public airport
+
+Check the quantity of Airport in the databese 
+```{r, warning=F}
+length(unique(May17flight$ORIGIN))
+```
+
+View the Location Map Use "Leaflet"
+```{r, warning=F,message=F}
+m1
+```
+
+ggplot
+{r, warning=F}
+cutoffdelay <- data.frame( x = c(-Inf, Inf), y = 15, cutoff = factor(15) )
+p=ggplot(subset(May17flight,!is.na(DEP_DELAY_NEW)),aes(x=DISTANCE,y=DEP_DELAY_NEW))
+p+
+   geom_point(alpha=0.1) +
+   geom_line(aes( x, y, linetype = cutoff , colour="Blue"), cutoffdelay)+
+   stat_summary(aes(y = DEP_DELAY_NEW,group=1), fun.y=mean, colour="red", geom="line",group=1)
+
+
+
+
+Only View Three Major Airlines
+
+ggplot(subset(May17flight,CARRIER %in% c("AA","UA","DL")),aes(x = DISTANCE, y = 
+
+DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)
+
+
+##View the monthly departure and arrival delay 
+Click on the point to view the avg.delay time
+
+
+```{r, warning=F,message=F}
+
+  
+m2
+```
+
+## Exceed 15mins of delay
+Click on the point to view the avg.delay time
+
+```{r, warning=F,message=F}
+m3
+```
+
+<BR>
+<BR>
+
+## Flight curve visualization {.tabset}
+
+### JFK
+```{r, warning=F,message=F}
+JFK1=linedf %>% 
+  filter(ORIGIN=="JFK")
+```
+
+```{r, warning=F,message=F}
+col.1 <- adjustcolor("orange red", alpha=0.4)
+col.2 <- adjustcolor("blue", alpha=0.9)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(50)
+
+map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+
+for (i in (1:dim(JFK1)[1])) { 
+  inter=gcIntermediate(c(JFK1$LONGITUDE.x[1], JFK1$LATITUDE.x[1]), c(JFK1$LONGITUDE.y[i], JFK1$LATITUDE.y[i]), n=100)
+  edge.ind <-(JFK1[i,]$dep_delay_)
+  range(edge.ind)
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+}
+```
+
+### ATL
+```{r, warning=F,message=F}
+ATL1=linedf %>% 
+  filter(ORIGIN=="ATL")
+```
+
+```{r, warning=F,message=F}
+col.1 <- adjustcolor("orange red", alpha=0.4)
+col.2 <- adjustcolor("blue", alpha=1)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(50)
+
+map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+
+for (i in (1:dim(ATL1)[1])) { 
+  inter=gcIntermediate(c(ATL1$LONGITUDE.x[1], ATL1$LATITUDE.x[1]), c(ATL1$LONGITUDE.y[i], ATL1$LATITUDE.y[i]), n=100)
+  edge.ind <-(ATL1[i,]$dep_delay_)
+  range(edge.ind)
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+}
+```
+
+### ORD
+```{r, warning=F,message=F}
+ORD1=linedf %>% 
+  filter(ORIGIN=="ORD")
+```
+
+```{r, warning=F,message=F}
+col.1 <- adjustcolor("orange red", alpha=0.4)
+col.2 <- adjustcolor("blue", alpha=1)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(50)
+
+map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+
+for (i in (1:dim(ORD1)[1])) { 
+  inter=gcIntermediate(c(ORD1$LONGITUDE.x[1], ORD1$LATITUDE.x[1]), c(ORD1$LONGITUDE.y[i], ORD1$LATITUDE.y[i]), n=100)
+  edge.ind <-(ORD1[i,]$dep_delay_)
+  range(edge.ind)
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+}
+```
+
+### LAX
+```{r, warning=F,message=F}
+LAX1=linedf %>% 
+  filter(ORIGIN=="LAX")
+```
+
+```{r, warning=F,message=F}
+col.1 <- adjustcolor("orange red", alpha=0.4)
+col.2 <- adjustcolor("blue", alpha=1)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(50)
+
+map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+
+for (i in (1:dim(LAX1)[1])) { 
+  inter=gcIntermediate(c(LAX1$LONGITUDE.x[1], LAX1$LATITUDE.x[1]), c(LAX1$LONGITUDE.y[i], LAX1$LATITUDE.y[i]), n=100)
+  edge.ind <-(LAX1[i,]$dep_delay_)
+  range(edge.ind)
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+}
 ```
 
 ## Relationship between Punctuality rate and Passager flow
@@ -223,7 +403,6 @@ figure() %>% ly_points(perDelay,Flow,data=g2a, hover=Description)
 figure() %>% ly_points(perDelay,Flow,data=g2a50, hover=list(Description,Flow,perDelay)) 
 ```
 
-# Results
 ```{r, warning=F,message=F}
 cor(a$Flow, a$DEP_DELAY_NEW,  method = "pearson", use = "complete.obs")
 

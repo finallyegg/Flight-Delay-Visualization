@@ -66,7 +66,7 @@ edge.col <- edge.pal(50)
 map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
 
 for (i in (1:dim(JFK1)[1])) { 
-  inter=gcIntermediate(c(jfk$lon[1], jfk$lat[1]), c(JFK1$LONGITUDE.y[i], JFK1$LATITUDE.y[i]), n=100)
+  inter=gcIntermediate(c(JFK1$LONGITUDE.x[1], JFK1$LATITUDE.x[1]), c(JFK1$LONGITUDE.y[i], JFK1$LATITUDE.y[i]), n=100)
   edge.ind <-(JFK1[i,]$dep_delay_)
   range(edge.ind)
   lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
