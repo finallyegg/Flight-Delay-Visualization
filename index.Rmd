@@ -297,7 +297,8 @@ linedf=May17flight %>%
        left_join(AirportData_nd,by = c("DEST" = "Code"))
 ```
 
-
+ **Plot Relationship between Passager flow and Punctuality rate**
+ After vis the interactive map
 <br>
 <br>
 
@@ -451,11 +452,11 @@ for (i in (1:dim(LAX1)[1])) {
 }
 ```
 
-## Relationship between Punctuality rate and Passager flow
+## Relationship between Passager flow and Punctuality rate {.tabset}
 ```{r, warning=F,message=F}
 g2=May17flight %>%
     group_by(ORIGIN) %>%
-    summarise(perDelay =   
+    summarise(On_time_Rate =   
     length(DEP_DELAY_NEW[DEP_DELAY_NEW<=15])/length(DEP_DELAY_NEW))
 
 g2a=left_join(g2,Halfflow,by = "ORIGIN")
@@ -463,10 +464,10 @@ g2a50=head(arrange(g2a,desc(Flow)), n = 50)
 #ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate",y="Passager flow")
 ```
 
-##Good looking and interactive Plot 
+
 ```{r, warning=F,message=F}
-figure() %>% ly_points(perDelay,Flow,data=g2a, hover=Description)
-figure() %>% ly_points(perDelay,Flow,data=g2a50, hover=list(Description,Flow,perDelay)) 
+figure() %>% ly_points(Flow,On_time_Rate,data=g2a, hover=Description)
+figure() %>% ly_points(Flow,On_time_Rate,data=g2a50, hover=list(Description,Flow,On_time_Rate)) 
 ```
 
 ```{r, warning=F,message=F}
@@ -474,10 +475,10 @@ cor(a$Flow, a$DEP_DELAY_NEW,  method = "pearson", use = "complete.obs")
 
 ##The corrleation shows the relationship between two variables, from -1 to 1. Bigger abs value is, more clear the relation.
 
-ggscatter(g2a50, x = "perDelay", y = "Flow", 
+ggscatter(g2a50, y = "On_time_Rate", x = "Flow", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
-          xlab = "Percentage of delay", ylab = "Passager Flow")
+          ylab = "On_time_Rate", xlab = "Passager Flow")
 ```
 
 
