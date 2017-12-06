@@ -154,3 +154,48 @@ gcIntermediate(c(5,52), c(-120,37),
   addTiles() %>% 
   addPolylines()
 
+
+
+leaflet(finished) %>% 
+  setView(-96, 37.8, 4) %>% 
+  addProviderTiles(providers$CartoDB.DarkMatter) %>%
+  #add markers and customize the properities
+  addCircleMarkers(
+    stroke = FALSE,
+    color=~pal(finished$DEP_DELAY_NEW),
+    popup = popuplabels,
+    radius = ~sqrt(finished$Flow)*0.01,
+    fillColor =~pal(finished$DEP_DELAY_NEW),
+    fillOpacity = 0.7, opacity = 0.7 ) %>% 
+  #set Legend properities
+  addLegend(
+    pal = pal, 
+    values = ~DEP_DELAY_NEW, 
+    opacity = 0.7, 
+    title = "Avg.Delaytime <br>in (minutes)</br>",
+    position = "bottomright") %>% 
+  setView(-96, 37.8, 4) %>% 
+  frameWidget(width = "100%",height = 600) %>% 
+  addLayersControl()
+
+
+<BR>
+  <BR>
+  
+  ggplot
+{r, warning=F}
+cutoffdelay <- data.frame( x = c(-Inf, Inf), y = 15, cutoff = factor(15) )
+p=ggplot(subset(May17flight,!is.na(DEP_DELAY_NEW)),aes(x=DISTANCE,y=DEP_DELAY_NEW))
+p+
+  geom_point(alpha=0.1) +
+  geom_line(aes( x, y, linetype = cutoff , colour="Blue"), cutoffdelay)+
+  stat_summary(aes(y = DEP_DELAY_NEW,group=1), fun.y=mean, colour="red", geom="line",group=1)
+
+
+
+
+Only View Three Major Airlines
+
+ggplot(subset(May17flight,CARRIER %in% c("AA","UA","DL")),aes(x = DISTANCE, y = 
+                                                                
+                                                                DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)

@@ -20,6 +20,12 @@ The hypothesis of this topic are. a) as the flight distance increase, the percen
 
 > “Punctuality is the soul of business” ~Thomas Chandler Halliburton 
 
+
+<br>
+<br>
+
+<hr color="#000000">
+
 # Materials and methods {.tabset}
 
 
@@ -42,8 +48,14 @@ library(DT)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 ```
 
+
+<br>
+<br>
+
+<hr color="#000000">
+
 ##Data Source:
-Click the hyperlink to select which variables of the data from BTS Website you want use. 
+**Click the hyperlink to select which variables of the data from BTS Website you want use.**
 
 
 * <a href="https://www.transtats.bts.gov/Tables.asp?DB_ID=120&DB_Name=Airline%20On-Time%20Performance%20Data&DB_Short_Name=On-Time"> Filght on-time Performance </a> --- 'Airline On-Time Performance Data'  From BUREAU OF TRANSPORTATION STATISTICS
@@ -62,6 +74,11 @@ Halfflow <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_
 
 ```
 
+
+<br>
+<br>
+
+<hr color="#000000">
 
 ## Data Processing
 
@@ -87,6 +104,11 @@ airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 
 ```
 
+
+<br>
+<br>
+
+<hr color="#000000">
 
 ## Methodology
 Because of the airline on-time data was described by the departure delay and arrival delay. Each flight can be considered as two spatial point -- Departure airport and Arrival airport. To study the punctuality rate of each flight, focusing on departure airport on time rate is important. 
@@ -183,7 +205,7 @@ m2=leaflet(finished) %>%
     title = "Avg.Delaytime <br>in (minutes)</br>",
     position = "bottomright") %>% 
   setView(-96, 37.8, 4) %>% 
-  frameWidget(width = "100%",height = 600)
+  frameWidget(width = "100%",height = 500)
 
 ```
 
@@ -220,7 +242,45 @@ m3=leaflet(a) %>%
       position = "bottomleft") %>% 
   setView(-96, 37.8, 4) %>% 
   frameWidget(width = "100%",height = 500)
-m3
+
+``` 
+
+<br>
+
+e.Delay which exceed 30 minutes
+
+```{r, warning=F}
+a1=filter(finished,finished$DEP_DELAY_NEW>30)
+colbm4=c(30,45,60,Inf)
+pal3=colorBin(c("#fd8d3c","#fc4e2a","#b10026"), a1$DEP_DELAY_NEW, bins=colbm4)
+```
+
+
+
+```{r, warning=F}
+popuplabels2 <- paste(a$DISPLAY_AIRPORT_NAME,"Airport",
+                 "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes")
+
+m4=leaflet(a1) %>% 
+    addProviderTiles(providers$CartoDB.DarkMatter) %>% 
+    addCircleMarkers(
+      lng=a1$LONGITUDE, lat=a1$LATITUDE,
+      color=~pal2(a1$DEP_DELAY_NEW),
+      popup = popuplabels2,
+      radius = ~sqrt(a1$Flow)*0.01,
+      fillColor =~pal3(a1$DEP_DELAY_NEW),
+      fillOpacity = 0.7, 
+      opacity = 0.7,
+      stroke = FALSE) %>% 
+    addLegend(
+      pal = pal3, 
+      values = ~DEP_DELAY_NEW, 
+      opacity = 0.7, 
+      title = "Avg.Delaytime <br>in (minutes)</br>",
+      position = "bottomleft") %>% 
+  setView(-96, 37.8, 4) %>% 
+  frameWidget(width = "100%",height = 500)
+
 ``` 
 
 <br>
@@ -247,56 +307,61 @@ linedf=May17flight %>%
 
 ##Briefly view the distribution of the public airport
 
-Check the quantity of Airport in the databese 
-```{r, warning=F}
-length(unique(May17flight$ORIGIN))
-```
-
 View the Location Map Use "Leaflet"
 ```{r, warning=F,message=F}
 m1
 ```
 
-ggplot
-{r, warning=F}
-cutoffdelay <- data.frame( x = c(-Inf, Inf), y = 15, cutoff = factor(15) )
-p=ggplot(subset(May17flight,!is.na(DEP_DELAY_NEW)),aes(x=DISTANCE,y=DEP_DELAY_NEW))
-p+
-   geom_point(alpha=0.1) +
-   geom_line(aes( x, y, linetype = cutoff , colour="Blue"), cutoffdelay)+
-   stat_summary(aes(y = DEP_DELAY_NEW,group=1), fun.y=mean, colour="red", geom="line",group=1)
+So how many points in total? 
+Check the quantity of Airport in the databese 
 
+```{r, warning=F}
+#'length' gives the length of a vector
+#'unique' extract the unduplicated string from the selected column
+length(unique(May17flight$ORIGIN))
+```
+So there are 296 airports in the data bases
 
+<BR>
+<BR>
 
-
-Only View Three Major Airlines
-
-ggplot(subset(May17flight,CARRIER %in% c("AA","UA","DL")),aes(x = DISTANCE, y = 
-
-DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)
-
-
-##View the monthly departure and arrival delay 
+##Interactive map of average departure delay by each airport {.tabset}
 Click on the point to view the avg.delay time
 
-
+### Overall view
+Click on the point to view the avg.delay time
 ```{r, warning=F,message=F}
-
-  
+##The radius of each circle represent the half-year numberic passager traffic of each airport.
+#radius = ~sqrt(finished$Flow)*0.01
 m2
 ```
 
-## Exceed 15mins of delay
-Click on the point to view the avg.delay time
+<BR>
+<BR>
 
+### Exceed 15mins of delay
+Click on the point to view the avg.delay time
 ```{r, warning=F,message=F}
+##The radius of each circle represent the half-year numberic passager traffic of each airport.
+#radius = ~sqrt(finished$Flow)*0.01
 m3
 ```
 
 <BR>
 <BR>
 
-## Flight curve visualization {.tabset}
+### Exceed 15mins of delay
+Click on the point to view the avg.delay time
+```{r, warning=F,message=F}
+##The radius of each circle represent the half-year numberic passager traffic of each airport.
+#radius = ~sqrt(finished$Flow)*0.01
+m4
+```
+
+<BR>
+<BR>
+
+## Flight path visualization {.tabset}
 
 ### JFK
 ```{r, warning=F,message=F}
