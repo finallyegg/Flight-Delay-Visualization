@@ -1,5 +1,5 @@
 ---
-title: "Visualization Demostic flight delay in May 2017"
+title: "Visualization of Demestic flight delay in May 2017"
 author: "Zeping He"
 subtitle: With the relationship of geographic...
 output:
@@ -17,11 +17,6 @@ With more and more people choose the plane to travel, the world aviation industr
 
 The hypothesis of this topic are. a) as the flight distance increase, the percentage and the degree of delayed flight will increase. The reason is long distance flight could be more effective by the Objective factors on the midway (i.e: weather conditions of the routing) before departure.  b) By the interactive maps shows, the geographic pattern will become a dominate. Similarities could be found in the regional group or cluster of the airport. 
 
-> “People want to fly. Demand for air travel over the next two decades is set to double. Enabling people and nations to trade, explore, and share the benefits of innovation and economic prosperity makes our world a better place,”   ~ Alexandre de Juniac, IATA’s Director General and CEO. 
-
-
-> “Punctuality is the soul of business” ~Thomas Chandler Halliburton 
-
 
 <br>
 <br>
@@ -30,8 +25,7 @@ The hypothesis of this topic are. a) as the flight distance increase, the percen
 
 # Materials and methods {.tabset}
 
-
-
+<br>
 
 ## Packages
 ```{r, message=FALSE, result=FALSE, warning=FALSE, tidy=TRUE}
@@ -322,6 +316,8 @@ g2a50=head(arrange(g2a,desc(Flow)), n = 50)
 
 # Results
 
+<br>
+
 ## Relationship between Passager flow and Punctuality rate {.tabset}
 
 ### Overview of all airports'
@@ -397,10 +393,11 @@ So there are 296 airports in the data bases
 <BR>
 
 ##Interactive map of average departure delay for each airport {.tabset}
-Click on the point to view the avg.delay time
 
 ### Overall view
-Click on the point to view the avg.delay time
+Click on the point to view the avg.delay time.
+
+The radius of each circle represent the half-year numberic passager traffic of each airport.
 ```{r, warning=F,message=F}
 ##The radius of each circle represent the half-year numberic passager traffic of each airport.
 #radius = ~sqrt(finished$Flow)*0.01
@@ -411,7 +408,9 @@ m2
 <BR>
 
 ### Exceed 15mins of delay
-Click on the point to view the avg.delay time
+Click on the point to view the avg.delay time.
+
+The radius of each circle represent the half-year numberic passager traffic of each airport.
 ```{r, warning=F,message=F}
 ##The radius of each circle represent the half-year numberic passager traffic of each airport.
 #radius = ~sqrt(finished$Flow)*0.01
@@ -422,7 +421,9 @@ m3
 <BR>
 
 ### Exceed 30mins of delay
-Click on the point to view the avg.delay time
+Click on the point to view the avg.delay time.
+S
+The radius of each circle represent the half-year numberic passager traffic of each airport.
 ```{r, warning=F,message=F}
 ##The radius of each circle represent the half-year numberic passager traffic of each airport.
 #radius = ~sqrt(finished$Flow)*0.01
