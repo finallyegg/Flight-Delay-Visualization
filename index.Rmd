@@ -47,6 +47,7 @@ library(stats)
 library(geosphere)
 library(readr)
 library(DT)
+library(highcharter)
 knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 ```
 
@@ -217,7 +218,7 @@ pal2=colorBin(c("#fed976","#fd8d3c","#fc4e2a","#b10026"), finished$DEP_DELAY_NEW
 
 ```{r, warning=F}
 popuplabels2 <- paste(a$DISPLAY_AIRPORT_NAME,"Airport",
-                 "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes")
+                 "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes","<br>Passager Traffic Here is</br>",a$Flow)
 
 m3=leaflet(a) %>% 
     addProviderTiles(providers$CartoDB.DarkMatter) %>% 
@@ -254,8 +255,8 @@ pal3=colorBin(c("#fd8d3c","#fc4e2a","#b10026"), a1$DEP_DELAY_NEW, bins=colbm4)
 
 
 ```{r, warning=F}
-popuplabels2 <- paste(a$DISPLAY_AIRPORT_NAME,"Airport",
-                 "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes")
+popuplabels3 <- paste(a$DISPLAY_AIRPORT_NAME,"Airport",
+                 "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes","<br>Passager Traffic Here is</br>",a1$Flow)
 
 m4=leaflet(a1) %>% 
     addProviderTiles(providers$CartoDB.DarkMatter) %>% 
@@ -321,6 +322,60 @@ g2a50=head(arrange(g2a,desc(Flow)), n = 50)
 
 # Results
 
+## Relationship between Passager flow and Punctuality rate {.tabset}
+
+### Overview of all airports'
+
+```{r, warning=F,message=F}
+figure() %>% ly_points(Flow,On_time_Rate,data=g2a, hover=Description,color =g2a$On_time_Rate ) %>% 
+  ly_abline(v=mean(g2a$Flow), color = "red",  width =1, alpha=.7) %>% 
+  ly_abline(h=mean(g2a$On_time_Rate), color = "red",  width =1, alpha=.7)
+
+```
+
+<br>
+<br>
+
+
+### Zoom in to the top 50 busiest Airport
+
+```{r, warning=F,message=F}
+figure() %>% ly_points(Flow,On_time_Rate,data=g2a50,hover=list(Description,Flow,On_time_Rate),color = On_time_Rate,alpha = 1)%>% 
+  ly_abline(v=mean(g2a50$Flow), color = "red",  width =1, alpha=.7) %>% 
+  ly_abline(h=mean(g2a50$On_time_Rate), color = "red",  width =1, alpha=.7, legend ="Average")
+```
+
+<br>
+<br>
+
+### Treemap
+
+```{r, warning=F,message=F}
+h1=hchart(g2a50, "treemap", hcaes(x = g2a50$ORIGIN, value = g2a50$Flow, color = g2a50$On_time_Rate)) %>% hc_tooltip(pointFormat = "<b>{point.name}</b>:<br>
+             Flow: {point.value:,.0f}<br>
+             ") %>% 
+  frameWidget(width = "100%",height = 500)
+h1
+```
+
+<br>
+<br>
+
+### Test the Pearson corrleation 
+```{r, warning=F,message=F}
+cor(g2a$Flow, g2a$On_time_Rate ,  method = "pearson", use = "complete.obs")
+
+##The corrleation shows the relationship between two variables, from -1 to 1. Bigger abs value is, more clear the relation.
+
+ggscatter(g2a50, y = "On_time_Rate", x = "Flow", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          ylab = "On_time_Rate", xlab = "Passager Flow")
+```
+
+<br>
+<br>
+
 ##Briefly view the distribution of the public airport
 
 View the Location Map Use "Leaflet"
@@ -366,7 +421,7 @@ m3
 <BR>
 <BR>
 
-### Exceed 15mins of delay
+### Exceed 30mins of delay
 Click on the point to view the avg.delay time
 ```{r, warning=F,message=F}
 ##The radius of each circle represent the half-year numberic passager traffic of each airport.
@@ -377,7 +432,7 @@ m4
 <BR>
 <BR>
 
-## Flight path visualization 
+## Flight network visualization 
 
 we will use <code>gcIntermediate()</code> to generate the coordinates of the shortest arc that connects its start and end point (think distance on the surface of a sphere). After that, we will plot each arc over the map using <code>lines()</code>.
 
@@ -390,20 +445,31 @@ JFK1=linedf %>%
 ```
 
 ```{r, warning=F,message=F}
+colbm=c(0,15,20,25,30)
 col.1 <- adjustcolor("orange red", alpha=0.4)
 col.2 <- adjustcolor("blue", alpha=0.9)
 edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
 edge.col <- edge.pal(50)
 
-map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+map("state", fill=T, col="grey8", bg="grey15")
 
 for (i in (1:dim(JFK1)[1])) { 
   inter=gcIntermediate(c(JFK1$LONGITUDE.x[1], JFK1$LATITUDE.x[1]), c(JFK1$LONGITUDE.y[i], JFK1$LATITUDE.y[i]), n=100)
   edge.ind <-(JFK1[i,]$dep_delay_)
   range(edge.ind)
-  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])
+  legend("bottomleft", # position
+  legend = colbm, 
+  title = "Delayed length",
+  fill = edge.pal(5),
+  cex = 0.56,
+  bty = "n") # border
 }
 ```
+
+<br>
+<br>
+<hr color="#000000">
 
 #### LGA
 ```{r, warning=F,message=F}
@@ -417,15 +483,25 @@ col.2 <- adjustcolor("blue", alpha=0.9)
 edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
 edge.col <- edge.pal(50)
 
-map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+map("state", fill=T, col="grey8", bg="grey15")
 
 for (i in (1:dim(LGA1)[1])) { 
   inter=gcIntermediate(c(LGA1$LONGITUDE.x[1], LGA1$LATITUDE.x[1]), c(LGA1$LONGITUDE.y[i], LGA1$LATITUDE.y[i]), n=100)
   edge.ind <-(LGA1[i,]$dep_delay_)
   range(edge.ind)
-  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])
+  legend("bottomleft", # position
+  legend = colbm, 
+  title = "Delayed length",
+  fill = edge.pal(5),
+  cex = 0.56,
+  bty = "n") # border
 }
 ```
+
+<br>
+<br>
+<hr color="#000000">
 
 #### EWR
 ```{r, warning=F,message=F}
@@ -439,15 +515,25 @@ col.2 <- adjustcolor("blue", alpha=0.9)
 edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
 edge.col <- edge.pal(50)
 
-map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+map("state", fill=T, col="grey8", bg="grey15")
 
 for (i in (1:dim(LGA1)[1])) { 
   inter=gcIntermediate(c(EWR1$LONGITUDE.x[1], EWR1$LATITUDE.x[1]), c(EWR1$LONGITUDE.y[i], EWR1$LATITUDE.y[i]), n=100)
   edge.ind <-(EWR1[i,]$dep_delay_)
   range(edge.ind)
-  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])
+  legend("bottomleft", # position
+  legend = colbm, 
+  title = "Delayed length",
+  fill = edge.pal(5),
+  cex = 0.56,
+  bty = "n") # border
 }
 ```
+
+<br>
+<br>
+<hr color="#000000">
 
 #### BOS
 ```{r, warning=F,message=F}
@@ -461,15 +547,25 @@ col.2 <- adjustcolor("blue", alpha=0.9)
 edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
 edge.col <- edge.pal(50)
 
-map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+map("state", fill=T, col="grey8", bg="grey15")
 
 for (i in (1:dim(LGA1)[1])) { 
   inter=gcIntermediate(c(BOS1$LONGITUDE.x[1], BOS1$LATITUDE.x[1]), c(BOS1$LONGITUDE.y[i], BOS1$LATITUDE.y[i]), n=100)
   edge.ind <-(BOS1[i,]$dep_delay_)
   range(edge.ind)
-  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])
+  legend("bottomleft", # position
+  legend = colbm, 
+  title = "Delayed length",
+  fill = edge.pal(5),
+  cex = 0.56,
+  bty = "n") # border
 }
 ```
+
+<br>
+<br>
+<hr color="#000000">
 
 #### DTW
 ```{r, warning=F,message=F}
@@ -489,9 +585,19 @@ for (i in (1:dim(DTW1)[1])) {
   inter=gcIntermediate(c(DTW1$LONGITUDE.x[1], DTW1$LATITUDE.x[1]), c(DTW1$LONGITUDE.y[i], DTW1$LATITUDE.y[i]), n=100)
   edge.ind <-(DTW1[i,]$dep_delay_)
   range(edge.ind)
-  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])
+  legend("bottomleft", # position
+  legend = colbm, 
+  title = "Delayed length",
+  fill = edge.pal(5),
+  cex = 0.56,
+  bty = "n") # border
 }
 ```
+
+<br>
+<br>
+<hr color="#000000">
 
 #### ATL
 ```{r, warning=F,message=F}
@@ -500,13 +606,13 @@ ATL1=linedf %>%
 ```
 
 ```{r, warning=F,message=F}
-colbm=c(0,15,20,25,30)
+
 col.1 <- adjustcolor("orange red", alpha=0.4)
 col.2 <- adjustcolor("blue", alpha=1)
 edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
 edge.col <- edge.pal(50)
 
-map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+map("state", fill=T, col="grey8", bg="grey15")
 
 for (i in (1:dim(ATL1)[1])) { 
   inter=gcIntermediate(c(ATL1$LONGITUDE.x[1], ATL1$LATITUDE.x[1]), c(ATL1$LONGITUDE.y[i], ATL1$LATITUDE.y[i]), n=100)
@@ -523,6 +629,10 @@ for (i in (1:dim(ATL1)[1])) {
 
 ```
 
+<br>
+<br>
+<hr color="#000000">
+
 #### ORD
 ```{r, warning=F,message=F}
 ORD1=linedf %>% 
@@ -535,15 +645,25 @@ col.2 <- adjustcolor("blue", alpha=1)
 edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
 edge.col <- edge.pal(50)
 
-map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+map("state", fill=T, col="grey8", bg="grey15")
 
 for (i in (1:dim(ORD1)[1])) { 
   inter=gcIntermediate(c(ORD1$LONGITUDE.x[1], ORD1$LATITUDE.x[1]), c(ORD1$LONGITUDE.y[i], ORD1$LATITUDE.y[i]), n=100)
   edge.ind <-(ORD1[i,]$dep_delay_)
   range(edge.ind)
-  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])
+  legend("bottomleft", # position
+  legend = colbm, 
+  title = "Delayed length",
+  fill = edge.pal(5),
+  cex = 0.56,
+  bty = "n") # border
 }
 ```
+
+<br>
+<br>
+<hr color="#000000">
 
 #### LAX
 ```{r, warning=F,message=F}
@@ -557,51 +677,20 @@ col.2 <- adjustcolor("blue", alpha=1)
 edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
 edge.col <- edge.pal(50)
 
-map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+map("state", fill=T, col="grey8", bg="grey15")
 
 for (i in (1:dim(LAX1)[1])) { 
   inter=gcIntermediate(c(LAX1$LONGITUDE.x[1], LAX1$LATITUDE.x[1]), c(LAX1$LONGITUDE.y[i], LAX1$LATITUDE.y[i]), n=100)
   edge.ind <-(LAX1[i,]$dep_delay_)
   range(edge.ind)
-  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])
+  legend("bottomleft", # position
+  legend = colbm, 
+  title = "Delayed length",
+  fill = edge.pal(5),
+  cex = 0.56,
+  bty = "n") # border
 }
-```
-
-## Relationship between Passager flow and Punctuality rate {.tabset}
-
-### Overview of all airports'
-
-```{r, warning=F,message=F}
-figure() %>% ly_points(Flow,On_time_Rate,data=g2a, hover=Description)
-
-```
-
-<br>
-<br>
-
-<hr color="#000000">
-
-### Zoom in to the top 50 busiest Airport
-
-```{r, warning=F,message=F}
-figure() %>% ly_points(Flow,On_time_Rate,data=g2a50,hover=list(Description,Flow,On_time_Rate)) 
-```
-
-<br>
-<br>
-
-<hr color="#000000">
-
-### Test the Pearson corrleation 
-```{r, warning=F,message=F}
-cor(g2a$Flow, g2a$On_time_Rate ,  method = "pearson", use = "complete.obs")
-
-##The corrleation shows the relationship between two variables, from -1 to 1. Bigger abs value is, more clear the relation.
-
-ggscatter(g2a50, y = "On_time_Rate", x = "Flow", 
-          add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson",
-          ylab = "On_time_Rate", xlab = "Passager Flow")
 ```
 
 <br>
