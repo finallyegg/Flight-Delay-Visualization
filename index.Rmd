@@ -2,7 +2,9 @@
 title: "Visualization Demostic flight delay in May 2017"
 author: "Zeping He"
 subtitle: With the relationship of geographic...
-output: html_document
+output:
+    html_document:
+        code_folding: show
 ---
 
 
@@ -32,7 +34,7 @@ The hypothesis of this topic are. a) as the flight distance increase, the percen
 
 
 ## Packages
-```{r, message=F, warning=F}
+```{r, message=FALSE, result=FALSE, warning=FALSE, tidy=TRUE}
 library(dplyr)
 library(ggplot2)
 library(maps)
@@ -54,7 +56,7 @@ knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
 
 <hr color="#000000">
 
-##Data Source:
+##Data Source
 **Click the hyperlink to select which variables of the data from BTS Website you want use.**
 
 
@@ -80,9 +82,10 @@ Halfflow <- read_csv("https://raw.githubusercontent.com/finallyegg/RDataScience_
 
 <hr color="#000000">
 
-## Data Processing
+## Data Processing and Methodology
+Because of the airline on-time data was described by the departure delay and arrival delay. Each flight can be considered as two spatial point -- Departure airport and Arrival airport. To study the punctuality rate of each flight, focusing on departure airport on time rate is important. 
 
-**Check if the data have duplicated**
+ **0.Check if the data have duplicated**
 
 ```{r, message=F, warning=F}
 length(AirportData$Code[duplicated(AirportData$Code)])
@@ -95,7 +98,9 @@ Remove duplicated Data in AirportData_table
 AirportData_nd=AirportData[!duplicated(AirportData$Code),]
 ```
 
-Georeference each airport by using "left-join" function, to assign each Origin Airport a coordinate base on their 3-digit 'Code', Left-join is based on the same string (names) of two tables. 
+ **0.5 Georeference each airport by using "left-join" function.**
+ 
+ Assign each Origin Airport a coordinate base on their 3-digit 'Code', Left-join  is based on the same string (names) of two tables. 
 
 ```{r, message=F, warning=F}
 codeunique=data.frame(unique(May17flight$ORIGIN))
@@ -104,18 +109,9 @@ airport_joined=left_join(codeunique, AirportData_nd, by = "Code")
 
 ```
 
-
-<br>
-<br>
-
-<hr color="#000000">
-
-## Methodology
-Because of the airline on-time data was described by the departure delay and arrival delay. Each flight can be considered as two spatial point -- Departure airport and Arrival airport. To study the punctuality rate of each flight, focusing on departure airport on time rate is important. 
-
  **1.Extract and aggregate the origin and destination location from the flight database **
 
-Since we have each flight origin and destination, we can group these flight by their origin location. By using 'group by' or 'aggregate' function, to group data by certain variable(s).
+Since we have each flight origin and destination, we can group these flight by their origin location. By using <code>'group by'</code> or <code>'aggregate'</code> function, to group data by certain variable(s).
 
 In this case, I am using 'mean' function to obtain the airport average delay value, so each seperate flight data will be classified and transformed as the airport data.
 
@@ -146,7 +142,7 @@ a. Distribution of US public airport
    To generate a basic knowledge of the airport spatial distribution, I made a point map to show the distribution. 
 
 ```{r, warning=F,message=F}
-m1=leaflet(airport_joined) %>% 
+m1=leaflet(airport_joined,options = leafletOptions(minZoom = 3, maxZoom = 5)) %>% 
   #set the center point and scale level (3)
    setView(-96, 37.8, 3) %>% 
   #add provider base map
@@ -182,11 +178,11 @@ c. Create a circle point map of airport, assign a color ramp for the linear dela
 
 ```{r, warning=F,message=F}
 popuplabels <- paste(finished$DISPLAY_AIRPORT_NAME,"Airport",
-                 "<br>Average Delay Here is</br>",round(finished$DEP_DELAY_NEW),"minutes")
+                 "<br>Average Delay Here is</br>",round(finished$DEP_DELAY_NEW),"minutes","<br>Passager Traffic Here is</br>",finished$Flow)
 
 
 
-m2=leaflet(finished) %>% 
+m2=leaflet(finished,options = leafletOptions(minZoom = 4, maxZoom = 6)) %>% 
   setView(-96, 37.8, 4) %>% 
   addProviderTiles(providers$CartoDB.DarkMatter) %>%
   #add markers and customize the properities
@@ -203,7 +199,7 @@ m2=leaflet(finished) %>%
     values = ~DEP_DELAY_NEW, 
     opacity = 0.7, 
     title = "Avg.Delaytime <br>in (minutes)</br>",
-    position = "bottomright") %>% 
+    position = "bottomleft") %>% 
   setView(-96, 37.8, 4) %>% 
   frameWidget(width = "100%",height = 500)
 
@@ -298,7 +294,26 @@ linedf=May17flight %>%
 ```
 
  **Plot Relationship between Passager flow and Punctuality rate**
- After vis the interactive map
+ After visualization the average delay of each airport, I want to study the relationship between Punctuality and passager traffic. Punctuality rate is different from average delay time, because this time we don't need to classify value by mean. Instead, we only need to know the ratio between 'flights departure delay less than 15 minutes' and the total scheduled flight for each airport.
+
+<br>
+
+a.Data Processing
+
+Create a table that contain the on_time_rate info
+```{r, warning=F,message=F}
+g2=May17flight %>%
+    group_by(ORIGIN) %>%
+    # add a column named 'On_time_Rate' to have the rate. 
+    summarise(On_time_Rate =   
+    length(DEP_DELAY_NEW[DEP_DELAY_NEW<=15])/length(DEP_DELAY_NEW))
+
+#Only view the top 50 busiest airport's data
+g2a=left_join(g2,Halfflow,by = "ORIGIN")
+g2a50=head(arrange(g2a,desc(Flow)), n = 50)
+#ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate",y="Passager flow")
+```
+
 <br>
 <br>
 
@@ -326,7 +341,7 @@ So there are 296 airports in the data bases
 <BR>
 <BR>
 
-##Interactive map of average departure delay by each airport {.tabset}
+##Interactive map of average departure delay for each airport {.tabset}
 Click on the point to view the avg.delay time
 
 ### Overall view
@@ -362,9 +377,13 @@ m4
 <BR>
 <BR>
 
-## Flight path visualization {.tabset}
+## Flight path visualization 
 
-### JFK
+we will use <code>gcIntermediate()</code> to generate the coordinates of the shortest arc that connects its start and end point (think distance on the surface of a sphere). After that, we will plot each arc over the map using <code>lines()</code>.
+
+### Northeast Airports {.tabset} 
+
+#### JFK
 ```{r, warning=F,message=F}
 JFK1=linedf %>% 
   filter(ORIGIN=="JFK")
@@ -386,13 +405,102 @@ for (i in (1:dim(JFK1)[1])) {
 }
 ```
 
-### ATL
+#### LGA
+```{r, warning=F,message=F}
+LGA1=linedf %>% 
+  filter(ORIGIN=="LGA")
+```
+
+```{r, warning=F,message=F}
+col.1 <- adjustcolor("orange red", alpha=0.4)
+col.2 <- adjustcolor("blue", alpha=0.9)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(50)
+
+map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+
+for (i in (1:dim(LGA1)[1])) { 
+  inter=gcIntermediate(c(LGA1$LONGITUDE.x[1], LGA1$LATITUDE.x[1]), c(LGA1$LONGITUDE.y[i], LGA1$LATITUDE.y[i]), n=100)
+  edge.ind <-(LGA1[i,]$dep_delay_)
+  range(edge.ind)
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+}
+```
+
+#### EWR
+```{r, warning=F,message=F}
+EWR1=linedf %>% 
+  filter(ORIGIN=="EWR")
+```
+
+```{r, warning=F,message=F}
+col.1 <- adjustcolor("orange red", alpha=0.4)
+col.2 <- adjustcolor("blue", alpha=0.9)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(50)
+
+map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+
+for (i in (1:dim(LGA1)[1])) { 
+  inter=gcIntermediate(c(EWR1$LONGITUDE.x[1], EWR1$LATITUDE.x[1]), c(EWR1$LONGITUDE.y[i], EWR1$LATITUDE.y[i]), n=100)
+  edge.ind <-(EWR1[i,]$dep_delay_)
+  range(edge.ind)
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+}
+```
+
+#### BOS
+```{r, warning=F,message=F}
+BOS1=linedf %>% 
+  filter(ORIGIN=="BOS")
+```
+
+```{r, warning=F,message=F}
+col.1 <- adjustcolor("orange red", alpha=0.4)
+col.2 <- adjustcolor("blue", alpha=0.9)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(50)
+
+map("world", regions=c("usa"), fill=T, col="grey8", bg="grey15", ylim=c(21.0,50.0), xlim=c(-130.0,-65.0))
+
+for (i in (1:dim(LGA1)[1])) { 
+  inter=gcIntermediate(c(BOS1$LONGITUDE.x[1], BOS1$LATITUDE.x[1]), c(BOS1$LONGITUDE.y[i], BOS1$LATITUDE.y[i]), n=100)
+  edge.ind <-(BOS1[i,]$dep_delay_)
+  range(edge.ind)
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+}
+```
+
+#### DTW
+```{r, warning=F,message=F}
+DTW1=linedf %>% 
+  filter(ORIGIN=="DTW")
+```
+
+```{r, warning=F,message=F}
+col.1 <- adjustcolor("orange red", alpha=0.4)
+col.2 <- adjustcolor("blue", alpha=0.9)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(50)
+
+map("state", fill=T, col="grey8", bg="grey15")
+
+for (i in (1:dim(DTW1)[1])) { 
+  inter=gcIntermediate(c(DTW1$LONGITUDE.x[1], DTW1$LATITUDE.x[1]), c(DTW1$LONGITUDE.y[i], DTW1$LATITUDE.y[i]), n=100)
+  edge.ind <-(DTW1[i,]$dep_delay_)
+  range(edge.ind)
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+}
+```
+
+#### ATL
 ```{r, warning=F,message=F}
 ATL1=linedf %>% 
   filter(ORIGIN=="ATL")
 ```
 
 ```{r, warning=F,message=F}
+colbm=c(0,15,20,25,30)
 col.1 <- adjustcolor("orange red", alpha=0.4)
 col.2 <- adjustcolor("blue", alpha=1)
 edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
@@ -404,11 +512,18 @@ for (i in (1:dim(ATL1)[1])) {
   inter=gcIntermediate(c(ATL1$LONGITUDE.x[1], ATL1$LATITUDE.x[1]), c(ATL1$LONGITUDE.y[i], ATL1$LATITUDE.y[i]), n=100)
   edge.ind <-(ATL1[i,]$dep_delay_)
   range(edge.ind)
-  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])   
+  lines(inter, lwd=edge.ind/30, col=edge.col[edge.ind])
+  legend("bottomleft", # position
+  legend = colbm, 
+  title = "Delayed length",
+  fill = edge.pal(5),
+  cex = 0.56,
+  bty = "n") # border
 }
+
 ```
 
-### ORD
+#### ORD
 ```{r, warning=F,message=F}
 ORD1=linedf %>% 
   filter(ORIGIN=="ORD")
@@ -430,7 +545,7 @@ for (i in (1:dim(ORD1)[1])) {
 }
 ```
 
-### LAX
+#### LAX
 ```{r, warning=F,message=F}
 LAX1=linedf %>% 
   filter(ORIGIN=="LAX")
@@ -453,25 +568,33 @@ for (i in (1:dim(LAX1)[1])) {
 ```
 
 ## Relationship between Passager flow and Punctuality rate {.tabset}
-```{r, warning=F,message=F}
-g2=May17flight %>%
-    group_by(ORIGIN) %>%
-    summarise(On_time_Rate =   
-    length(DEP_DELAY_NEW[DEP_DELAY_NEW<=15])/length(DEP_DELAY_NEW))
 
-g2a=left_join(g2,Halfflow,by = "ORIGIN")
-g2a50=head(arrange(g2a,desc(Flow)), n = 50)
-#ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate",y="Passager flow")
-```
-
+### Overview of all airports'
 
 ```{r, warning=F,message=F}
 figure() %>% ly_points(Flow,On_time_Rate,data=g2a, hover=Description)
-figure() %>% ly_points(Flow,On_time_Rate,data=g2a50, hover=list(Description,Flow,On_time_Rate)) 
+
 ```
 
+<br>
+<br>
+
+<hr color="#000000">
+
+### Zoom in to the top 50 busiest Airport
+
 ```{r, warning=F,message=F}
-cor(a$Flow, a$DEP_DELAY_NEW,  method = "pearson", use = "complete.obs")
+figure() %>% ly_points(Flow,On_time_Rate,data=g2a50,hover=list(Description,Flow,On_time_Rate)) 
+```
+
+<br>
+<br>
+
+<hr color="#000000">
+
+### Test the Pearson corrleation 
+```{r, warning=F,message=F}
+cor(g2a$Flow, g2a$On_time_Rate ,  method = "pearson", use = "complete.obs")
 
 ##The corrleation shows the relationship between two variables, from -1 to 1. Bigger abs value is, more clear the relation.
 
@@ -481,13 +604,19 @@ ggscatter(g2a50, y = "On_time_Rate", x = "Flow",
           ylab = "On_time_Rate", xlab = "Passager Flow")
 ```
 
+<br>
+<br>
 
-<iframe width="100%" height="520" frameborder="0" src="https://finallyegg.carto.com/builder/70b6bef3-8a21-49ac-bfb5-61835c359fe9/embed" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
-
+<hr color="#000000">
 
 # Conclusions
 
-The relationship between flight delay time and  distance or airport passager flow is not clear. 
+
+
+<br>
+<br>
+
+<hr color="#000000">
 
 # References
 
