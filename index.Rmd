@@ -436,7 +436,7 @@ m4
 
 we will use <code>gcIntermediate()</code> to generate the coordinates of the shortest arc that connects its start and end point (think distance on the surface of a sphere). After that, we will plot each arc over the map using <code>lines()</code>.
 
-### Northeast Airports {.tabset} 
+### 8 busiest Airport Flight path {.tabset} 
 
 #### JFK
 ```{r, warning=F,message=F}
