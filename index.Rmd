@@ -23,7 +23,7 @@ output:
  **Importance**
  
 * Make a better understanding of airport departure delay in US
-* Gulide a further research in filght path.
+* Lead a further research in filght path.
 
 
 <br>
