@@ -1,5 +1,5 @@
 ---
-title: "Visualization of Demestic flight delay in May 2017"
+title: "Visualization of US airport delay in May 2017"
 author: "Zeping He"
 subtitle: 
 output:
@@ -9,9 +9,21 @@ output:
 
 
 # Introduction
-With more and more people choose the plane to travel, the world aviation industry has a significant growth in the quantity of the travelers, so as the demand of the airplane. In the year of 2016, 3.8 billion air travelers fly all over the earth. The International Air Transport Association (IATA) expects 7.2 billion passengers to travel in 2035, a near doubling of air travelers in 2016. In a world of increasing transparency, immediate information and action, flight status and punctuality data have an increasingly important role to play in all of our planning. Everyone from the fuelling company to the catering supplier to the traveler wants access to timely, accurate information about the on-time performance. In my project, I will 
+ **Problem Statement**
 
-The hypothesis of this topic are. a) as the flight distance increase, the percentage and the degree of delayed flight will increase. The reason is long distance flight could be more effective by the Objective factors on the midway (i.e: weather conditions of the routing) before departure.  b) By the interactive maps shows, the geographic pattern will become a dominate. Similarities could be found in the regional group or cluster of the airport. 
+* Many major airports around the US have significant delay problems as a result of increasing demand of passenger. The world aviation industry has a significant growth in the quantity of the travelers. In the year of 2016, 3.8 billion air travelers fly all over the earth. The International Air Transport Association (IATA) expects 7.2 billion passengers to travel in 2035, a near doubling of air travelers in 2016.
+*In the United States, average arrival delays at 85 airports were greater than 15 minutes in 2017, 836,017 were effected and only 78.80% of all schedule flights is on time.
+
+ **Objective**
+ 
+* Deliver the airport delay distribution information in US from visual approach.
+* Test if the schedulle flights in each airport are evenly affect by the average delay-time. 
+* Test the correlation between passengers traffic and delay time.
+
+ **Importance**
+ 
+* Make a better understanding of airport departure delay in US
+* Gulide a further research in filght path.
 
 
 <br>
@@ -107,7 +119,7 @@ Since we have each flight origin and destination, we can group these flight by t
 In this case, I am using 'mean' function to obtain the airport average delay value, so each seperate flight data will be classified and transformed as the airport data.
 
 
-Then perform left-join serval times to generate a 'final' table contains 'Airport Code', 'Delay Time', 'Passager Flow' and 'coordinate'
+Then perform left-join serval times to generate a 'final' table contains 'Airport Code', 'Delay Time', 'Passengers Flow' and 'coordinate'
 
 ```{r, warning=F,message=F}
 #In this case, I use 'aggregate' to extract the 12th and 13th column from May17flight data table, these columns contains the departure and arrival delay time for each flight. 
@@ -116,7 +128,7 @@ monthlydata=aggregate(May17flight[, 12:13], list(May17flight$ORIGIN), mean,na.rm
 colnames(monthlydata)[colnames(monthlydata)=="Group.1"]="Code"
 #add geographical coordinates information to each airport
 l2=left_join(monthlydata, AirportData_nd, by = "Code")
-#add passager traffic information
+#add passengers traffic information
 finished=left_join(l2, Halfflow, by = c("Code" = "ORIGIN"))
 ```
 
@@ -164,12 +176,12 @@ pal <- colorBin("YlOrRd", domain = finished$DEP_DELAY_NEW,bins = colbm2)
 <br>
 
 c. Create a circle point map of airport, assign a color ramp for the linear delay percentage. The radius of the 
-   circle represents the numberic of passager traffic in that airport. 
+   circle represents the numberic of passenger traffic in that airport. 
 
 
 ```{r, warning=F,message=F}
 popuplabels <- paste(finished$DISPLAY_AIRPORT_NAME,"Airport",
-                 "<br>Average Delay Here is</br>",round(finished$DEP_DELAY_NEW),"minutes","<br>Passager Traffic Here is</br>",finished$Flow)
+                 "<br>Average Delay Here is</br>",round(finished$DEP_DELAY_NEW),"minutes","<br>Passenger Traffic Here is</br>",finished$Flow)
 
 
 
@@ -208,7 +220,7 @@ pal2=colorBin(c("#fed976","#fd8d3c","#fc4e2a","#b10026"), finished$DEP_DELAY_NEW
 
 ```{r, warning=F}
 popuplabels2 <- paste(a$DISPLAY_AIRPORT_NAME,"Airport",
-                 "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes","<br>Passager Traffic Here is</br>",a$Flow)
+                 "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes","<br>Passenger Traffic Here is</br>",a$Flow)
 
 m3=leaflet(a) %>% 
     addProviderTiles(providers$CartoDB.DarkMatter) %>% 
@@ -246,7 +258,7 @@ pal3=colorBin(c("#fd8d3c","#fc4e2a","#b10026"), a1$DEP_DELAY_NEW, bins=colbm4)
 
 ```{r, warning=F}
 popuplabels3 <- paste(a$DISPLAY_AIRPORT_NAME,"Airport",
-                 "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes","<br>Passager Traffic Here is</br>",a1$Flow)
+                 "<br>Average Delay Here is</br>",round(a$DEP_DELAY_NEW),"minutes","<br>Passenger Traffic Here is</br>",a1$Flow)
 
 m4=leaflet(a1) %>% 
     addProviderTiles(providers$CartoDB.DarkMatter) %>% 
@@ -284,8 +296,8 @@ linedf=May17flight %>%
        left_join(AirportData_nd,by = c("DEST" = "Code"))
 ```
 
- **Plot Relationship between Passager flow and Punctuality rate**
- After visualization the average delay of each airport, I want to study the relationship between Punctuality and passager traffic. Punctuality rate is different from average delay time, because this time we don't need to classify value by mean. Instead, we only need to know the ratio between 'flights departure delay less than 15 minutes' and the total scheduled flight for each airport.
+ **Plot Relationship between Passenger flow and Punctuality rate**
+ After visualization the average delay of each airport, I want to study the relationship between Punctuality and passenger traffic. Punctuality rate is different from average delay time, because this time we don't need to classify value by mean. Instead, we only need to know the ratio between 'flights departure delay less than 15 minutes' and the total scheduled flight for each airport.
 
 <br>
 
@@ -302,7 +314,7 @@ g2=May17flight %>%
 #Only view the top 50 busiest airport's data
 g2a=left_join(g2,Halfflow,by = "ORIGIN")
 g2a50=head(arrange(g2a,desc(Flow)), n = 50)
-#ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate",y="Passager flow")
+#ggplot(g2a,aes(x = perDelay, y = Flow)) +geom_point() + labs(x="Punctuality rate",y="Passenger flow")
 ```
 
 <br>
@@ -314,14 +326,14 @@ g2a50=head(arrange(g2a,desc(Flow)), n = 50)
 
 <br>
 
-## Relationship between Passager flow and Punctuality rate {.tabset}
+## Relationship between Passenger flow and Punctuality rate {.tabset}
 
 ### Overview of all airports'
 
 ```{r, warning=F,message=F}
 figure() %>% ly_points(Flow,On_time_Rate,data=g2a, hover=Description,color =g2a$On_time_Rate ) %>% 
   ly_abline(v=mean(g2a$Flow), color = "red",  width =1, alpha=.7) %>% 
-  ly_abline(h=mean(g2a$On_time_Rate), color = "red",  width =1, alpha=.7)
+  ly_abline(h=mean(g2a$On_time_Rate), color = "red",  width =1, alpha=.7,legend ="Average")
 
 ```
 
@@ -362,7 +374,7 @@ cor(g2a$Flow, g2a$On_time_Rate ,  method = "pearson", use = "complete.obs")
 ggscatter(g2a50, y = "On_time_Rate", x = "Flow", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
-          ylab = "On_time_Rate", xlab = "Passager Flow")
+          ylab = "On_time_Rate", xlab = "Passenger Flow")
 ```
 
 <br>
@@ -393,9 +405,9 @@ So there are 296 airports in the data bases
 ### Overall view
 Click on the point to view the avg.delay time.
 
-The radius of each circle represent the half-year numberic passager traffic of each airport.
+The radius of each circle represent the half-year numberic Passenger traffic of each airport.
 ```{r, warning=F,message=F}
-##The radius of each circle represent the half-year numberic passager traffic of each airport.
+##The radius of each circle represent the half-year numberic passenger traffic of each airport.
 #radius = ~sqrt(finished$Flow)*0.01
 m2
 ```
@@ -406,9 +418,9 @@ m2
 ### Exceed 15mins of delay
 Click on the point to view the avg.delay time.
 
-The radius of each circle represent the half-year numberic passager traffic of each airport.
+The radius of each circle represent the half-year numberic Passenger traffic of each airport.
 ```{r, warning=F,message=F}
-##The radius of each circle represent the half-year numberic passager traffic of each airport.
+##The radius of each circle represent the half-year numberic passenger traffic of each airport.
 #radius = ~sqrt(finished$Flow)*0.01
 m3
 ```
@@ -419,9 +431,9 @@ m3
 ### Exceed 30mins of delay
 Click on the point to view the avg.delay time.
 S
-The radius of each circle represent the half-year numberic passager traffic of each airport.
+The radius of each circle represent the half-year numberic passenger traffic of each airport.
 ```{r, warning=F,message=F}
-##The radius of each circle represent the half-year numberic passager traffic of each airport.
+##The radius of each circle represent the half-year numberic passenger traffic of each airport.
 #radius = ~sqrt(finished$Flow)*0.01
 m4
 ```
@@ -434,6 +446,8 @@ m4
 we will use <code>gcIntermediate()</code> to generate the coordinates of the shortest arc that connects its start and end point (think distance on the surface of a sphere). After that, we will plot each arc over the map using <code>lines()</code>.
 
 ### 8 busiest Airport Flight path {.tabset} 
+
+**In these flight path map, we could see the delay time of each flight is not even distribution. The delay time distribution is more affected by spatial distribution. **
 
 #### JFK
 ```{r, warning=F,message=F}
@@ -697,6 +711,11 @@ for (i in (1:dim(LAX1)[1])) {
 
 # Conclusions
 
+* For United States, there are more airports located in coast area than inland area. And these coast airports suffered more of the delay. Perhaps the unstable the weather near the see caused that. 
+
+* It's very hard to find the correlation between passenger traffic and delay time, the Pearson correlation for all US airport is nearly equal to zero. But for the top 50 busiest airport, the Pearson correlation is -0.2, negative correlation between two factor, indicates an imbalance between capacity and demand. 
+
+* From the flight path visualization, the delay for each  schedule flight is more affected by the destination location rather than the average delay of that airport. For example, JFK airport, regardless of the departure location, the departure delay for those flights  are always greater than 25mintues. What caused this phenomenon is worth further research.  
 
 
 <br>
@@ -706,3 +725,11 @@ for (i in (1:dim(LAX1)[1])) {
 
 # References
 
+M. Hansen (2002),"Micro-level analysis of airport delay externalities using deterministic
+queuing models: a case study", Journal of Air Transport Management 8 (2002) 73–87
+
+Antony D. Evans (2002), "RAPID MODELLING OF AIRPORT DELAY", 12th Air Transport Research Society (ATRS)
+World Conference
+
+
+FlightStats, Inc, Airline On-Time Performance Reports, Global Hub Departure Performance

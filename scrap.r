@@ -199,3 +199,4 @@ Only View Three Major Airlines
 ggplot(subset(May17flight,CARRIER %in% c("AA","UA","DL")),aes(x = DISTANCE, y = 
                                                                 
                                                                 DEP_DELAY_NEW, color = factor(CARRIER)))+ geom_point(alpha=0.3)
+
