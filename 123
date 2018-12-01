@@ -1,0 +1,607 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Clement/Goodyear",
+        "Address": "Goodyear Road, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.81564974784851,
+          42.956728743647666
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "University Station",
+        "Address": "Main Circle, University at Buffalo "
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.81983399391174,
+          42.9540746773739
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Rotary and Hayes",
+        "Address": "Rotary Road, University at Buffalo "
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.81860017776488,
+          42.94961825836968
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "LaSalle Station",
+        "Address": "3030 Main Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.82990837097168,
+          42.94786308672505
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Hertel - Winston to Shoshone",
+        "Address": "1859 Hertel Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.83909225463867,
+          42.94769031544578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Hertel - Parkside to Starin",
+        "Address": "651-661 Parkside Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.84953141212463,
+          42.947870939953475
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Hertel and N Park",
+        "Address": "1417 Hertel Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.85575413703918,
+          42.94778455438551
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Delaware Park",
+        "Address": "1215 Amherst Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.85913372039795,
+          42.94033923363181
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Amherst St.",
+        "Address": "492 Amherst Street, Buffalo, NY"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.88579487800598,
+          42.93984441775013
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Buffalo State #2",
+        "Address": "Union Place, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.88159453868866,
+          42.93369423138065
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Buffalo State College ",
+        "Address": "Rockwell Road, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.8777482509613,
+          42.932076072625385
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Elmwood - Forest to Bidwell",
+        "Address": "1110 Elmwood Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87728691101074,
+          42.927755537559115
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Bidwell Parkway at Elmwood",
+        "Address": "951 Elmwood Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87719571590422,
+          42.92374109611156
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Canisius College",
+        "Address": "Metro Rail, Main Street, Elmwood Village, Buffalo, New York"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.8568377494812,
+          42.922539069601186
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Lafayette and Grant",
+        "Address": "230 Lafayette Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.89005422592163,
+          42.920354935267476
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Elmwood - Auburn to Ferry",
+        "Address": "695 Elmwood Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87685775756836,
+          42.91562499770492
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Left Bank",
+        "Address": "Rhode Island Street, Elmwood Village, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.88325214385986,
+          42.913126312707604
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Five Points - Utica and Rhode Island",
+        "Address": "524 West Utica Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.885977268219,
+          42.91128759300656
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Elmwood - Bryant to Summer",
+        "Address": "414-424 Elmwood Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87722253799438,
+          42.90863549682
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "West Side Community Services",
+        "Address": "161-179 Vermont Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.89183521270752,
+          42.905771104764796
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Connecticut and Normal",
+        "Address": "340 Connecticut Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.88789772987366,
+          42.90563750847105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "D'youville College",
+        "Address": "327 Porter Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.89020979404448,
+          42.902317154627276
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Porter and Normal ",
+        "Address": "52-66 Normal Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.88503313064574,
+          42.902344661251675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Allen - Wadsworth to Elmwood ",
+        "Address": "The Bend, Allen Street, Allentown, New York"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87994766235352,
+          42.89938959372931
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Allen - Elmwood to Park ",
+        "Address": "185 Allen Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87696504592896,
+          42.8995625005173
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Allen - Delaware to Franklin ",
+        "Address": "Studio Hart, Allen Street, Allentown, New York"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87241065502167,
+          42.899310999574496
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "BNMC 2",
+        "Address": "911-917 Main Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.86988401412962,
+          42.8994210313632
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "BNMC 1",
+        "Address": "567-603 North Oak Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.86793673038483,
+          42.8971103225659
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Fillmore & Glenwood",
+        "Address": "712 Glenwood Avenue, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.83869528770447,
+          42.912489839019
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Science Museum",
+        "Address": "1020 Humboldt Parkway, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.84387731552124,
+          42.90606973072751
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Broadway Market",
+        "Address": "1014 Broadway, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.83808374404907,
+          42.893290389570915
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Larkinville",
+        "Address": "694 Swan Street, Buffalo, NY"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.85040581226347,
+          42.87680144185088
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Riverworks",
+        "Address": "339 Ganson Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87147188186646,
+          42.86937506299508
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Canalside at Naval Park",
+        "Address": "3-7 Marine Drive, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.8794755935669,
+          42.87791394572745
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Turner Lofts",
+        "Address": "285 Niagara Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.88355255126953,
+          42.892410042246205
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "The Westin Hotel on Delaware",
+        "Address": "Spot Coffee, West Chippewa Street, Allentown, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87695431709288,
+          42.89096373007495
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Main St - Tupper to Chippewa",
+        "Address": "657 Main Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.8724160194397,
+          42.89129386953615
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Roosevelt Plaza",
+        "Address": "5 East Huron Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87320458889008,
+          42.88845225417814
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "City Hall ",
+        "Address": "Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87903571128845,
+          42.88615292601687
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Buffalo and Erie County Public Library",
+        "Address": "Allpro Parking, Washington Street, Allentown, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87293100357056,
+          42.88563409140079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "NFTA Bus Station",
+        "Address": "181 Ellicott Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87268960475922,
+          42.88328355870319
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "M&T Plaza",
+        "Address": "345 Main Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.87484073638915,
+          42.88333465819242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Canisius 2",
+        "Address": "2001 Main Street, Buffalo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.85160207748413,
+          42.92506879748082
+        ]
+      }
+    }
+  ]
+}
