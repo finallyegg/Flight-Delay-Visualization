@@ -1,4 +1,4 @@
-# RDataScience_Project
+# Flight-Delay-Visualization
 Deliver the airport delay distribution information in US from visual approach.
 
-https://finallyegg.github.io/RDataScience_Project/
+https://finallyegg.github.io/Flight-Delay-Visualization/
